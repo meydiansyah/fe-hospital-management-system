@@ -58,9 +58,9 @@ const HeroSection = () => {
   useEffect(() => {
     const duration = 2000;
     const start = performance.now();
-    let animationFrameId;
+    let animationFrameId: number;
 
-    const animate = (time) => {
+    const animate = (time: number) => {
       const progress = Math.min((time - start) / duration, 1);
       const updated = stats.map((stat) => Math.floor(stat.value * progress));
       setCounts(updated);
