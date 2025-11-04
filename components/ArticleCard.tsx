@@ -2,7 +2,19 @@
 
 import Image from "next/image";
 
-export default function ArticleCard({ cover, published_at, title, summary }) {
+interface ArticleCardProps {
+  cover: string;
+  published_at: string;
+  title: string;
+  summary: string;
+}
+
+export default function ArticleCard({
+  cover,
+  published_at,
+  title,
+  summary,
+}: ArticleCardProps) {
   return (
     <a
       href="#"
@@ -30,7 +42,7 @@ export default function ArticleCard({ cover, published_at, title, summary }) {
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
-            strokeWidth="1.5"
+            strokeWidth={1.5}
             stroke="currentColor"
             className="w-5 h-5"
           >
