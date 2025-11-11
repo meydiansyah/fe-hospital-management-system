@@ -24,6 +24,122 @@
   "find": "Temukan",
   "find_more": "Temukan lainnya",
   "find_doctor_placeholder": "Temukan dokter, spesialis ...",
+  "topbar": {
+    "instagram": "Instagram",
+    "youtube": "Youtube",
+    "activate_location": "Aktifkan Lokasi",
+    "er_24_hours": "IGD 24 Jam"
+  },
+  "searchSection": {
+    "titleLine1": "Cari Dokter, Layanan Medis, atau Informasi Kesehatan",
+    "titleLine2": "di Sentra Medika Hospital",
+    "placeholder": "Dokter, layanan, atau informasi medis terbaru",
+    "searchButton": "Cari",
+    "links": {
+      "appointment": "Appointment",
+      "hospital": "Rumah Sakit",
+      "profile": "Profil",
+      "chat": "Chat Us"
+    }
+  },
+  "searchPage": {
+    "title": "Hasil Pencarian",
+    "searchPlaceholder": "Cari lagi...",
+    "filters": [
+      "Dokter",
+      "Spesialis & Subspesialis",
+      "Penawaran Khusus",
+      "Center of Excellence",
+      "Artikel Kesehatan",
+      "Berita & Acara"
+    ],
+    "sections": {
+      "doctors": "Dokter",
+      "seeAllDoctors": "Lihat Semua Dokter",
+      "specialties": "Spesialis & Subspesialis",
+      "seeAll": "Lihat lainnya",
+      "specialOffers": "Penawaran Khusus",
+      "coe": "Center of Excellence",
+      "healthArticles": "Artikel Kesehatan",
+      "news": "Berita & Acara",
+      "noResults": "Tidak ada hasil"
+    },
+    "doctorCard": {
+      "book": "Buat Janji",
+      "hospital": "Rumah Sakit"
+    },
+    "specialtyTag": "Unggulan"
+  },
+  "doctorDetail": {
+    "backToList": "Kembali ke semua dokter",
+    "notFoundTitle": "Dokter tidak ditemukan",
+    "notFoundDescription": "Kami tidak menemukan dokter yang Anda cari.",
+    "highlightTag": "Dokter Pilihan",
+    "profileTitle": "Profil Dokter",
+    "availableAt": "Tersedia di",
+    "scheduleTitle": "Jadwal & Buat Janji Temu",
+    "clinicSubtitle": "Lihat jadwal praktik di bawah ini",
+    "symptomsTitle": "Gejala & Penyakit",
+    "proceduresTitle": "Penanganan / Prosedur Spesialistik",
+    "calloutTitle": "Pilih jadwal janji temu Anda",
+    "calloutSubtitle": "Tim kami akan segera mengonfirmasi pesanan Anda setelah pengajuan.",
+    "bookNow": "Buat Janji Temu"
+  },
+  "bookingModal": {
+    "title": "Jadwal & Janji Temu Dokter",
+    "subtitle": "Lengkapi detail pemesanan untuk memastikan slot konsultasi Anda.",
+    "pickDate": "Pilih Tanggal",
+    "dateHint": "Janji temu dapat dipesan hingga tiga bulan ke depan.",
+    "available": "Tersedia",
+    "unavailable": "Tidak tersedia",
+    "consultationTime": "Waktu Konsultasi",
+    "pickBranch": "Pilih Cabang Rumah Sakit",
+    "patientInfo": {
+      "title": "Informasi Pasien",
+      "select": "Pilih Pasien",
+      "description": "Pastikan janji temu dipesan untuk pasien yang tepat."
+    },
+    "payment": {
+      "title": "Metode Pembayaran",
+      "select": "Pilih Metode",
+      "description": "Pilih metode pembayaran yang Anda inginkan."
+    },
+    "cancel": "Tutup",
+    "confirm": "Konfirmasi Janji",
+    "today": "Hari Ini"
+  },
+  "doctorDetailSections": {
+    "education": "Pendidikan",
+    "otherDoctors": {
+      "title": "Dokter Lainnya",
+      "seeAll": "Lihat Semua Dokter",
+      "book": "Buat Janji"
+    }
+  },
+  "hero": {
+    "brandAlt": "Logo SMHG",
+    "dotLabel": "Ke slide {{index}}",
+    "slides": [
+      {
+        "badge": "SWICC",
+        "tagline": "Sentra Medika Integrated Cancer Center",
+        "title": "Masa Depan Perawatan Kanker Terpadu Komprehensif Dimulai di Sini",
+        "description": "Jalani perjalanan onkologi menyeluruh dengan dukungan pakar multidisiplin, diagnostik mutakhir, dan pendampingan penuh empati untuk setiap keluarga.",
+        "cta": "Pelajari Pusat Kanker Terpadu SMHG",
+        "indicator": "Dipercaya ribuan keluarga",
+        "imageAlt": "Pasangan lansia tersenyum bersama"
+      },
+      {
+        "badge": "SWICC",
+        "tagline": "Program Onkologi Lanjutan",
+        "title": "Rencana Perawatan Personal untuk Setiap Perjalanan Penyembuhan",
+        "description": "Tim onkologi multidisiplin kami merancang jalur terapi individual dengan teknologi mutakhir dan navigator yang penuh kepedulian.",
+        "cta": "Jelajahi Program Onkologi Kami",
+        "indicator": "Koordinasi dan dukungan 24/7",
+        "imageAlt": "Dokter berdiskusi dengan pasien di klinik"
+      }
+    ]
+  },
   "doctor_page": {
     "title": "Cari Dokter",
     "subtitle": "Temukan dengan mudah dokter yang tepat untuk kebutuhan Anda",

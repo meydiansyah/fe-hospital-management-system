@@ -59,7 +59,7 @@ export default function MainNav({ hideTopBar, onGetStarted }: MainNavProps) {
     <motion.div
       style={{ y: hideTopBar ? -50 : 0 }}
       transition={{ type: "tween", duration: 0.3 }}
-      className="bg-white/70 backdrop-blur-md supports-[backdrop-filter]:bg-white/70 ease-in duration-400"
+      className="bg-white ease-in duration-400"
     >
       <div className="mx-auto max-w-7xl px-6 sm:px-8">
         <div className="flex h-16 items-center justify-between">

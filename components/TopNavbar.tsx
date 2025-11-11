@@ -1,20 +1,29 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
+import clsx from "clsx";
 import { useTranslation } from "react-i18next";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  Phone,
+  Instagram,
+  Youtube,
+  MapPin,
+  Ambulance,
+  Globe,
+  MessageSquareText,
+  Dot,
+} from "lucide-react";
 import { RootState } from "@/store";
 import { setLanguage } from "@/store/slices/languageSlice";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Globe, MessageSquareText } from "lucide-react";
-import clsx from "clsx";
-import Link from "next/link";
 
 interface TopBarProps {
   hideTopBar: boolean;
@@ -32,59 +41,76 @@ export default function TopBar({ hideTopBar }: TopBarProps) {
 
   return (
     <motion.div
-      className="bg-blue-900 h-[50px] text-white ease-in duration-400"
+      className="h-[48px] border-b border-slate-200 bg-[#f8f9fd] text-xs text-slate-600 ease-in duration-400"
       style={{ y: hideTopBar ? -50 : 0 }}
       transition={{ type: "tween", duration: 0.3 }}
     >
-      <div className="mx-auto max-w-7xl px-6 sm:px-8">
-        <div className="flex py-2 items-center justify-between">
-          <div className="hidden md:flex items-center divide-x-2">
-            {/* <div className="text-sm px-4 font-medium">{t("contact_us")}</div> */}
-            <div className="flex py-2 items-center justify-between">
-              <div className="hidden md:flex items-center divide-x-2 gap-4">
-                <div className="text-sm pr-4 font-medium">
-                  {t("contact_us")}
-                </div>
-                {/* <div className="flex space-x-6 text-sm px-4 font-medium transition-colors">
-                  {navItems.slice(0, 2).map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="hover:text-gray-300 ease-in duration-200 transition-colors capitalize"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-                </div> */}
-                <Link
-                  href="/feedback"
-                  className="pr-4 flex items-center font-medium gap-1 hover:text-gray-300 ease-in duration-200 transition-colors capitalize"
-                >
-                  <MessageSquareText className="w-4 h-4" />
-                  {t("feedback.title")}
-                </Link>
-              </div>
-            </div>
+      <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6 sm:px-8">
+        <div className="hidden w-full items-center gap-4 md:flex">
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-2 font-medium">
+              <Phone className="h-4 w-4" aria-hidden />
+              {t("contact_us")}
+            </span>
+            <div className="h-4 w-px bg-slate-300" />
+            <a
+              href="#instagram"
+              className="flex items-center gap-2 hover:text-slate-900"
+            >
+              <Instagram className="h-4 w-4" aria-hidden />
+              {t("topbar.instagram")}
+            </a>
+            <div className="h-4 w-px bg-slate-300" />
+            <a
+              href="#youtube"
+              className="flex items-center gap-2 hover:text-slate-900"
+            >
+              <Youtube className="h-4 w-4" aria-hidden />
+              {t("topbar.youtube")}
+            </a>
+            <div className="h-4 w-px bg-slate-300" />
+            <Link
+              href="/feedback"
+              className="flex items-center gap-2 hover:text-slate-900"
+            >
+              <MessageSquareText className="h-4 w-4" aria-hidden />
+              {t("feedback.title")}
+            </Link>
+          </div>
+        </div>
+
+        <div className="flex w-full items-center justify-end gap-4 md:gap-6">
+          <div className="hidden items-center gap-4 md:flex">
+            <span className="flex items-center gap-2 font-medium">
+              <MapPin className="h-4 w-4" aria-hidden />
+              {t("topbar.activate_location")}
+            </span>
+            <div className="h-4 w-px bg-slate-300" />
+            <span className="flex items-center gap-2 font-medium text-red-600">
+              <Ambulance className="h-4 w-4" aria-hidden />
+              {t("topbar.er_24_hours")}
+            </span>
+            <div className="h-4 w-px bg-slate-300" />
           </div>
 
-          {/* Language Switcher */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
                 size="sm"
-                className="flex items-center gap-2 hover:bg-blue-800"
+                className="flex items-center gap-2 rounded-full border border-transparent px-3 py-1 font-medium text-slate-600 hover:border-slate-200 hover:bg-white"
               >
-                <Globe className="h-4 w-4 text-white" />
-                <span className="uppercase text-white">{lang}</span>
+                <Globe className="h-4 w-4" aria-hidden />
+                <span className="uppercase">{lang}</span>
+                <Dot className="h-4 w-4 text-red-500" aria-hidden />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuContent align="end" className="w-40 text-sm">
               <DropdownMenuItem
                 onClick={() => changeLanguage("en")}
                 className={clsx(
                   "cursor-pointer",
-                  lang === "en" && "bg-gray-100 font-medium"
+                  lang === "en" && "bg-slate-100 font-medium"
                 )}
               >
                 English
@@ -93,7 +119,7 @@ export default function TopBar({ hideTopBar }: TopBarProps) {
                 onClick={() => changeLanguage("id")}
                 className={clsx(
                   "cursor-pointer",
-                  lang === "id" && "bg-gray-100 font-medium"
+                  lang === "id" && "bg-slate-100 font-medium"
                 )}
               >
                 Bahasa Indonesia
