@@ -41,6 +41,7 @@ import { ReactNode } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Providers } from "./providers";
+import FloatingActionsSection from "@/components/QuickActionsSection";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -50,6 +51,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
+          <FloatingActionsSection />
         </body>
       </Providers>
     </html>

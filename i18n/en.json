@@ -24,6 +24,122 @@
   "find": "Find",
   "find_more": "Find More",
   "find_doctor_placeholder": "Search for doctors, specialties...",
+  "topbar": {
+    "instagram": "Instagram",
+    "youtube": "Youtube",
+    "activate_location": "Activate Location",
+    "er_24_hours": "ER 24 Hours"
+  },
+  "searchSection": {
+    "titleLine1": "Find Doctors, Medical Services, or Health Information",
+    "titleLine2": "at Sentra Medika Hospital",
+    "placeholder": "Doctors, services, or the latest medical information",
+    "searchButton": "Search",
+    "links": {
+      "appointment": "Appointment",
+      "hospital": "Hospital",
+      "profile": "Profile",
+      "chat": "Chat Us"
+    }
+  },
+  "searchPage": {
+    "title": "Search Results",
+    "searchPlaceholder": "Search again...",
+    "filters": [
+      "Doctors",
+      "Specialties & Subspecialties",
+      "Special Offers",
+      "Center of Excellence",
+      "Health Articles",
+      "News & Events"
+    ],
+    "sections": {
+      "doctors": "Doctors",
+      "seeAllDoctors": "See All Doctors",
+      "specialties": "Specialties & Subspecialties",
+      "seeAll": "See more",
+      "specialOffers": "Special Offers",
+      "coe": "Center of Excellence",
+      "healthArticles": "Health Articles",
+      "news": "News & Events",
+      "noResults": "No results found"
+    },
+    "doctorCard": {
+      "book": "Book Now",
+      "hospital": "Hospital"
+    },
+    "specialtyTag": "Highlight"
+  },
+  "doctorDetail": {
+    "backToList": "Back to all doctors",
+    "notFoundTitle": "Doctor not found",
+    "notFoundDescription": "We could not find the doctor you are looking for.",
+    "highlightTag": "Preferred Doctor",
+    "profileTitle": "Doctor Profile",
+    "availableAt": "Available at",
+    "scheduleTitle": "Schedule & Appointment",
+    "clinicSubtitle": "Check available sessions below",
+    "symptomsTitle": "Symptoms & Conditions",
+    "proceduresTitle": "Procedures & Treatments",
+    "calloutTitle": "Pick your appointment schedule",
+    "calloutSubtitle": "Our team will confirm your booking immediately after submission.",
+    "bookNow": "Book Appointment"
+  },
+  "bookingModal": {
+    "title": "Doctor Schedule & Appointment",
+    "subtitle": "Complete the booking details to secure your consultation slot.",
+    "pickDate": "Select Date",
+    "dateHint": "Appointments can be booked up to the next three months.",
+    "available": "Available",
+    "unavailable": "Unavailable",
+    "consultationTime": "Consultation Time",
+    "pickBranch": "Select Hospital Branch",
+    "patientInfo": {
+      "title": "Patient Information",
+      "select": "Choose Patient",
+      "description": "Ensure the consultation is booked for the correct patient."
+    },
+    "payment": {
+      "title": "Payment Method",
+      "select": "Select Method",
+      "description": "Choose your preferred payment option."
+    },
+    "cancel": "Close",
+    "confirm": "Confirm Booking",
+    "today": "Today"
+  },
+  "doctorDetailSections": {
+    "education": "Education",
+    "otherDoctors": {
+      "title": "Other Doctors",
+      "seeAll": "See All Doctors",
+      "book": "Book"
+    }
+  },
+  "hero": {
+    "brandAlt": "SMHG Logo",
+    "dotLabel": "Go to slide {{index}}",
+    "slides": [
+      {
+        "badge": "SWICC",
+        "tagline": "Sentra Medika Integrated Cancer Center",
+        "title": "The Future of Comprehensive Integrated Cancer Treatment Starts Here",
+        "description": "Experience a holistic oncology journey guided by multidisciplinary experts, advanced diagnostics, and compassionate support for every family.",
+        "cta": "Discover SWICC Center",
+        "indicator": "Trusted by thousands of families",
+        "imageAlt": "Senior couple smiling together"
+      },
+      {
+        "badge": "SWICC",
+        "tagline": "Advanced Oncology Program",
+        "title": "Personalized Care Plans Tailored for Every Journey",
+        "description": "Our multidisciplinary oncology team designs individualized treatment pathways supported by cutting-edge technology and compassionate navigators.",
+        "cta": "Explore Our Oncology Program",
+        "indicator": "24/7 care coordination & support",
+        "imageAlt": "Doctor consulting a patient in a clinic"
+      }
+    ]
+  },
   "doctor_page": {
     "title": "Find a Doctor",
     "subtitle": "Easily find the right doctor for your needs",

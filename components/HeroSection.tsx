@@ -1,265 +1,153 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, Search, MapPin } from "lucide-react";
-import SearchBar from "./SearchBar";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+
+type HeroSlideContent = {
+  badge?: string;
+  tagline: string;
+  title: string;
+  description: string;
+  cta: string;
+  indicator: string;
+  imageAlt: string;
+};
+
+const slideImages = [
+  "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1200&q=80&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1584467735815-f778f274e4eb?w=1200&q=80&auto=format&fit=crop",
+];
 
 const HeroSection = () => {
+  const { t } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [location, setLocation] = useState("");
-  const [counts, setCounts] = useState([0, 0, 0, 0]);
 
-  const slides = [
-    {
-      title: "Find Your Perfect Doctor",
-      description:
-        "Connect with experienced healthcare professionals in your area. Quality care is just a search away.",
-      image:
-        "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=800&q=80",
-      background:
-        "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1920&q=80",
-    },
-    {
-      title: "Expert Medical Care",
-      description:
-        "Access specialized healthcare professionals across multiple disciplines. Your health, our priority.",
-      image:
-        "https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=800&q=80",
-      background:
-        "https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=1920&q=80",
-    },
-    {
-      title: "Healthcare Made Simple",
-      description:
-        "Book appointments, consult online, and manage your health journey all in one place.",
-      image:
-        "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80",
-      background:
-        "https://images.unsplash.com/photo-1584982751601-97dcc096659c?w=1920&q=80",
-    },
-  ];
-
-  const stats = [
-    { label: "Happy Patients", value: 12500, suffix: "+" },
-    { label: "Expert Doctors", value: 250, suffix: "+" },
-    { label: "Hospitals", value: 15, suffix: "" },
-    { label: "Years of Experience", value: 20, suffix: "" },
-  ];
+  const slides = (
+    t("hero.slides", {
+      returnObjects: true,
+    }) as HeroSlideContent[]
+  ).map((slide, index) => ({
+    ...slide,
+    image: slideImages[index % slideImages.length],
+  }));
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
-
+    if (!slides.length) return;
+    const timer = setInterval(
+      () => setCurrentSlide((prev) => (prev + 1) % slides.length),
+      6000
+    );
     return () => clearInterval(timer);
   }, [slides.length]);
 
-  // Animate statistics on mount
-  useEffect(() => {
-    const duration = 2000;
-    const start = performance.now();
-    let animationFrameId: number;
-
-    const animate = (time: number) => {
-      const progress = Math.min((time - start) / duration, 1);
-      const updated = stats.map((stat) => Math.floor(stat.value * progress));
-      setCounts(updated);
-
-      if (progress < 1) {
-        animationFrameId = requestAnimationFrame(animate);
-      }
-    };
-
-    animationFrameId = requestAnimationFrame(animate);
-
-    return () => {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
-    };
-  }, []);
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
   };
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  };
-
-  const handleSearch = () => {
-    console.log("Searching for:", searchQuery, "in", location);
-    alert(`Searching for "${searchQuery}" in "${location}"`);
-  };
+  const current = slides[currentSlide];
 
   return (
-    <div className="relative w-full min-h-screen overflow-hidden">
-      {/* Background Images Layer */}
-      <div className="absolute inset-0 z-0">
-        {slides.map((slide, index) => (
-          <div
-            key={`bg-${index}`}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              index === currentSlide ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <Image
-              src={slide.background}
-              alt=""
-              fill
-              priority={index === 0}
-              quality={85}
-              sizes="100vw"
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-black/60"></div>
-          </div>
-        ))}
-      </div>
-
-      <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 h-screen flex items-center z-10">
-        <div className="w-full lg:w-1/2 space-y-8 text-left max-w-xl">
-          {/* Sliding Title and Description */}
-          <div className="relative min-h-[12rem]">
+    <section className="relative pt-40 min-h-screen overflow-hidden bg-white">
+      <div className="absolute inset-0">
+        <div className="mx-auto grid h-full w-full grid-cols-1 lg:grid-cols-2">
+          <div />
+          <div className="relative">
             {slides.map((slide, index) => (
-              <div
-                key={index}
-                className={`absolute inset-0 transition-opacity duration-700 ${
+              <Image
+                key={`bg-${slide.title}-${index}`}
+                src={slide.image}
+                alt={slide.imageAlt}
+                fill
+                priority={index === currentSlide}
+                className={`object-cover transition-opacity duration-1000 ${
                   index === currentSlide ? "opacity-100" : "opacity-0"
                 }`}
+              />
+            ))}
+            <div className="absolute inset-0 bg-linear-to-l from-blue-100/40 via-blue-100/10 to-transparent" />
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.7) 60%, rgba(255,255,255,0.4) 75%, rgba(255,255,255,0) 100%)",
+        }}
+      />
+
+      <div className="relative z-10 mx-auto grid min-h-[640px] max-w-7xl grid-cols-1 gap-12 px-6 pb-16 pt-28 sm:px-10 lg:grid-cols-2 lg:items-center lg:gap-20 lg:pb-24 lg:pt-36">
+        <div className="relative">
+          <div className="mb-8 flex items-center gap-4">
+            <Image
+              src="/smhg-logo.webp"
+              alt={t("hero.brandAlt")}
+              width={120}
+              height={44}
+              className="h-10 w-auto"
+              priority
+            />
+            <div className="rounded-full border border-red-200 px-4 py-1 text-sm font-semibold uppercase tracking-wide text-red-600">
+              {current?.badge ?? "SWICC"}
+            </div>
+          </div>
+
+          <div className="relative min-h-[280px]">
+            {slides.map((slide, index) => (
+              <div
+                key={`slide-text-${slide.title}-${index}`}
+                className={`absolute inset-0 space-y-6 transition-all duration-700 ease-out ${
+                  index === currentSlide
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-6 opacity-0"
+                }`}
               >
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+                <p className="text-sm font-semibold uppercase tracking-[0.28em] text-blue-700">
+                  {slide.tagline}
+                </p>
+                <h1 className="text-4xl font-bold leading-tight text-blue-950 sm:text-5xl lg:text-[3.25rem]">
                   {slide.title}
                 </h1>
-
-                <p className="text-lg sm:text-xl text-gray-200 leading-relaxed">
+                <p className="text-lg leading-relaxed text-slate-600 sm:text-xl">
                   {slide.description}
                 </p>
+                <div className="flex flex-wrap items-center gap-5 pt-2">
+                  <Link
+                    href="#swicc"
+                    className="inline-flex items-center rounded-full bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-red-400/40 transition hover:bg-red-700"
+                  >
+                    {slide.cta}
+                  </Link>
+                  <div className="flex items-center gap-2 text-sm text-slate-500">
+                    <span className="inline-block h-2 w-2 rounded-full bg-blue-600" />
+                    <span>{slide.indicator}</span>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
+
+        <div className="relative hidden lg:block" />
       </div>
 
-      {/* Floating Search Card - Bottom (Above Statistics) */}
-      {/* <div className="absolute bottom-40 left-1/2 -translate-x-1/2 w-full max-w-5xl px-6 z-30">
-        <div className="bg-white rounded-2xl shadow-2xl p-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search for doctors, specialties..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors text-gray-900 placeholder-gray-400"
-              />
-            </div>
-
-            <div className="relative flex-1">
-              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors text-gray-900 placeholder-gray-400"
-              />
-            </div>
-
-            <button
-              onClick={handleSearch}
-              className="px-8 py-4 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl whitespace-nowrap"
-            >
-              Find Doctor
-            </button>
-          </div>
-        </div>
-      </div> */}
-
-      <SearchBar />
-
-      {/* Statistics Section - Bottom */}
-      <div className="absolute bottom-0 left-0 right-0 bg-primary py-10 z-20">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid grid-cols-2 xl:grid-cols-4 gap-12 xl:gap-20">
-            {stats.map((stat, idx) => (
-              <div key={idx} className="flex flex-col items-center space-y-4">
-                <span className="text-5xl md:text-6xl font-bold text-white">
-                  {counts[idx].toLocaleString()}
-                  {stat.suffix}
-                </span>
-                <p className="text-gray-200 font-medium xl:text-xl text-center">
-                  {stat.label}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation buttons */}
-      <button
-        onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-full transition-all duration-300 transform hover:scale-110 shadow-lg z-20"
-        aria-label="Previous slide"
-      >
-        <ChevronLeft className="w-6 h-6" />
-      </button>
-
-      <button
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-full transition-all duration-300 transform hover:scale-110 shadow-lg z-20"
-        aria-label="Next slide"
-      >
-        <ChevronRight className="w-6 h-6" />
-      </button>
-
-      {/* Dot indicators */}
-      <div className="absolute bottom-[22rem] md:bottom-80 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+      <div className="relative z-10 flex items-center justify-center gap-3 pb-12">
         {slides.map((_, index) => (
           <button
-            key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`h-3 rounded-full transition-all duration-300 ${
-              index === currentSlide
-                ? "bg-white w-10"
-                : "bg-white/50 w-3 hover:bg-white/75"
+            key={`dot-${index}`}
+            type="button"
+            onClick={() => goToSlide(index)}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              index === currentSlide ? "w-10 bg-blue-900" : "w-3 bg-blue-200"
             }`}
-            aria-label={`Go to slide ${index + 1}`}
+            aria-label={t("hero.dotLabel", { index: index + 1 })}
           />
         ))}
       </div>
-
-      <style jsx>{`
-        @keyframes blob {
-          0% {
-            transform: translate(0px, 0px) scale(1);
-          }
-          33% {
-            transform: translate(30px, -50px) scale(1.1);
-          }
-          66% {
-            transform: translate(-20px, 20px) scale(0.9);
-          }
-          100% {
-            transform: translate(0px, 0px) scale(1);
-          }
-        }
-
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-      `}</style>
-    </div>
+    </section>
   );
 };
 

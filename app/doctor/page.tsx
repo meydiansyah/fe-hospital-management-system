@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { Search, Building2, X } from "lucide-react";
 import {
   Select,
@@ -9,11 +10,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
+import { slugify } from "@/lib/utils";
 
 // ==== Types ====
 interface Doctor {
   id: number;
   name: string;
+  slug: string;
   specialty: string;
   subspecialty: string;
   hospital: string;
@@ -45,6 +49,7 @@ const mockDoctors: Doctor[] = [
   {
     id: 1,
     name: "dr Abdullah Shidqul Azmi, Sp.PD",
+    slug: slugify("dr Abdullah Shidqul Azmi, Sp.PD"),
     specialty: "Penyakit Dalam",
     subspecialty: "Subspesialis Penyakit Dalam",
     hospital: "Sentra Medika Cisalak",
@@ -54,6 +59,7 @@ const mockDoctors: Doctor[] = [
   {
     id: 2,
     name: "Andhika Rachman, dr, Sp.PD-KHOM",
+    slug: slugify("Andhika Rachman, dr, Sp.PD-KHOM"),
     specialty: "Penyakit Dalam",
     subspecialty: "Subspesialis Hemotologi Oknologi Medik",
     hospital: "Sentra Medika Cibinong",
@@ -63,6 +69,7 @@ const mockDoctors: Doctor[] = [
   {
     id: 3,
     name: "Christy Efiyanti, dr, SpPD",
+    slug: slugify("Christy Efiyanti, dr, SpPD"),
     specialty: "Penyakit Dalam",
     subspecialty: "Subspesialis Penyakit Dalam",
     hospital: "Sentra Medika Cibinong",
@@ -72,6 +79,7 @@ const mockDoctors: Doctor[] = [
   {
     id: 4,
     name: "dr Abdullah Shidqul Azmi, Sp.PD",
+    slug: slugify("dr Abdullah Shidqul Azmi, Sp.PD"),
     specialty: "Penyakit Dalam",
     subspecialty: "Subspesialis Penyakit Dalam",
     hospital: "Sentra Medika Cisalak",
@@ -81,6 +89,7 @@ const mockDoctors: Doctor[] = [
   {
     id: 5,
     name: "Andhika Rachman, dr, Sp.PD-KHOM",
+    slug: slugify("Andhika Rachman, dr, Sp.PD-KHOM"),
     specialty: "Penyakit Dalam",
     subspecialty: "Subspesialis Hemotologi Oknologi Medik",
     hospital: "Sentra Medika Cisalak",
@@ -90,6 +99,7 @@ const mockDoctors: Doctor[] = [
   {
     id: 6,
     name: "Christy Efiyanti, dr, SpPD",
+    slug: slugify("Christy Efiyanti, dr, SpPD"),
     specialty: "Penyakit Dalam",
     subspecialty: "Subspesialis Penyakit Dalam",
     hospital: "Sentra Medika Cibinong",
@@ -164,16 +174,19 @@ const Dropdown: React.FC<DropdownProps> = ({
 
 // ==== Doctor Card Component ====
 const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
+  const { t } = useTranslation();
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
       <div className="flex gap-4 mb-4">
-        <Image
-          src={doctor.image}
-          alt={doctor.name}
-          width={100}
-          height={100}
-          className="w-20 h-20 rounded-lg object-cover"
-        />
+        <Link href={`/doctor/${doctor.slug}`} className="block">
+          <Image
+            src={doctor.image}
+            alt={doctor.name}
+            width={100}
+            height={100}
+            className="w-20 h-20 rounded-lg object-cover"
+          />
+        </Link>
         <div className="flex-1">
           <h3 className="font-semibold text-lg text-gray-900 mb-1">
             {doctor.name}
@@ -189,11 +202,14 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
       </div>
 
       <div className="flex gap-3">
-        <button className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-          Lihat Profil
-        </button>
+        <Link
+          href={`/doctor/${doctor.slug}`}
+          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-center hover:bg-gray-50 transition-colors"
+        >
+          {t("doctor_page.view_profile")}
+        </Link>
         <button className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-          Buat Janji temu
+          {t("doctor_page.make_appointment")}
         </button>
       </div>
     </div>
@@ -202,6 +218,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
 
 // ==== Main Component ====
 const DoctorSearch: React.FC = () => {
+  const { t } = useTranslation();
   const { doctors, loading, fetchDoctors, useMockData, setUseMockData } =
     useDoctorStore();
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -213,9 +230,9 @@ const DoctorSearch: React.FC = () => {
     availability: "",
   });
 
-  useEffect(() => {
-    fetchDoctors(filters);
-  }, [useMockData]);
+  // useEffect(() => {
+  //   fetchDoctors(filters);
+  // }, [useMockData]);
 
   const handleResetFilters = () => {
     setFilters({
@@ -237,10 +254,10 @@ const DoctorSearch: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Cari Dokter</h1>
-          <p className="text-gray-600">
-            Temukan dengan mudah dokter yang tepat untuk kebutuhan Anda
-          </p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            {t("doctor_page.title")}
+          </h1>
+          <p className="text-gray-600">{t("doctor_page.subtitle")}</p>
         </div>
 
         <div className="flex gap-8">
@@ -252,7 +269,7 @@ const DoctorSearch: React.FC = () => {
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="Cari nama atau spesialisasi"
+                    placeholder={t("search_placeholder")}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
@@ -264,14 +281,14 @@ const DoctorSearch: React.FC = () => {
               {/* Filter Header */}
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-gray-900">
-                  Filter Berdasarkan
+                  {t("doctor_page.filters_title")}
                 </h2>
                 <button
                   onClick={handleResetFilters}
                   className="text-red-600 text-sm flex items-center gap-1 hover:text-red-700"
                 >
                   <X className="w-4 h-4" />
-                  Reset Filter
+                  {t("doctor_page.reset")}
                 </button>
               </div>
 
