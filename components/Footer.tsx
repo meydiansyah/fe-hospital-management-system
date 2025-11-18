@@ -1,37 +1,33 @@
+"use client";
+
 import Link from "next/link";
 import { Instagram, Youtube, Facebook, Twitter } from "lucide-react";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/store";
+import { getDescription } from "@/lib/dataTransformers";
 
 const Footer = () => {
-  const hospitals = [
-    { name: "Sentra Medika Cibinong", href: "/hospitals/cibinong" },
-    { name: "Sentra Medika Cikarang", href: "/hospitals/cikarang" },
-    { name: "Sentra Medika Cisalak", href: "/hospitals/cisalak" },
-    { name: "Sentra Medika Minahasa Utara", href: "/hospitals/minahasa-utara" },
-    { name: "Sentra Medika Gempol", href: "/hospitals/gempol" },
-    { name: "RS Harapan Bunda", href: "/hospitals/harapan-bunda" },
-  ];
+  const { hospitals, centerOfExcellences, hospitalsLoading, centerOfExcellencesLoading } = useSelector(
+    (state: RootState) => state.masterData
+  );
 
-  const centers = [
-    {
-      name: "Soeherman Widyatomo Integrated Cancer Center (SWICC)",
-      href: "/centers/swicc",
-    },
-    {
-      name: "Cardiovascular & Brain Center",
-      href: "/centers/cardiovascular-brain",
-    },
-    { name: "Jakarta Timur Eye Center (JTEC)", href: "/centers/jtec" },
-    { name: "Medical Rehabilitation Center", href: "/centers/rehabilitation" },
-    { name: "Trauma Center", href: "/centers/trauma" },
-    {
-      name: "Integrated Women & Child Healthcare",
-      href: "/centers/women-child",
-    },
-    {
-      name: "Geriatric & Diabetic Center",
-      href: "/centers/geriatric-diabetic",
-    },
-  ];
+  // Transform hospitals data
+  const footerHospitals = hospitals
+    .filter((h) => h.is_active)
+    .slice(0, 6)
+    .map((hospital) => ({
+      name: hospital.name,
+      href: `/hospital/${hospital.slug}`,
+    }));
+
+  // Transform center of excellences data
+  const footerCenters = centerOfExcellences
+    .filter((c) => c.is_active)
+    .slice(0, 7)
+    .map((center) => ({
+      name: getDescription(center.title) || center.name,
+      href: `/center-of-excellence/${center.slug}`,
+    }));
 
   const information = [
     { name: "Tentang Sentra Medika Hospital Group", href: "/about" },
@@ -65,24 +61,30 @@ const Footer = () => {
 
   return (
     <footer id="site-footer" className="bg-[#f2f4ff] text-slate-700">
-      <div className="max-w-7xl mx-auto px-6 py-12 lg:py-16">
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Rumah Sakit Kami */}
           <div>
             <h3 className="text-lg font-semibold text-slate-900 mb-4">
               Rumah Sakit Kami
             </h3>
             <ul className="space-y-2 text-sm text-slate-600">
-              {hospitals.map((hospital) => (
-                <li key={hospital.name}>
-                  <Link
-                    href={hospital.href}
-                    className="transition-colors hover:text-slate-900"
-                  >
-                    {hospital.name}
-                  </Link>
-                </li>
-              ))}
+              {hospitalsLoading ? (
+                <li className="text-slate-400">Memuat...</li>
+              ) : footerHospitals.length > 0 ? (
+                footerHospitals.map((hospital) => (
+                  <li key={hospital.name}>
+                    <Link
+                      href={hospital.href}
+                      className="transition-colors hover:text-slate-900"
+                    >
+                      {hospital.name}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <li className="text-slate-400">Tidak ada data</li>
+              )}
             </ul>
           </div>
 
@@ -92,16 +94,22 @@ const Footer = () => {
               Center of Excellence
             </h3>
             <ul className="space-y-2 text-sm text-slate-600">
-              {centers.map((center) => (
-                <li key={center.name}>
-                  <Link
-                    href={center.href}
-                    className="transition-colors hover:text-slate-900"
-                  >
-                    {center.name}
-                  </Link>
-                </li>
-              ))}
+              {centerOfExcellencesLoading ? (
+                <li className="text-slate-400">Memuat...</li>
+              ) : footerCenters.length > 0 ? (
+                footerCenters.map((center) => (
+                  <li key={center.name}>
+                    <Link
+                      href={center.href}
+                      className="transition-colors hover:text-slate-900"
+                    >
+                      {center.name}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <li className="text-slate-400">Tidak ada data</li>
+              )}
             </ul>
           </div>
 

@@ -5,8 +5,7 @@ export type LanguageState = {
 };
 
 const initialState: LanguageState = {
-  lang:
-    typeof window !== "undefined" ? localStorage.getItem("lang") || "en" : "en",
+  lang: "en",
 };
 
 const languageSlice = createSlice({

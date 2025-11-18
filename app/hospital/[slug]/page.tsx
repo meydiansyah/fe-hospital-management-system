@@ -432,9 +432,9 @@ export default async function HospitalDetailPage({
   }
 
   return (
-    <div className="space-y-16 pt-40">
-      <section className="relative isolate overflow-hidden rounded-b-[3rem]">
-        <div className="relative h-[360px] w-full">
+    <div className="space-y-16 pt-30 pb-12">
+      <section className="relative isolate overflow-hidden">
+        <div className="relative min-h-[320px] w-full sm:min-h-[380px] lg:min-h-[420px]">
           <Image
             src={hospital.heroImage}
             alt={hospital.name}
@@ -444,34 +444,10 @@ export default async function HospitalDetailPage({
             sizes="100vw"
           />
           <div className="absolute inset-0 bg-linear-to-b from-black/50 via-black/30 to-blue-900/80" />
-          <div className="relative mx-auto flex h-full max-w-6xl flex-col justify-center gap-4 px-6 py-10 text-white sm:px-8">
-            <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.28em] text-blue-100">
-              {hospital.heroSubtitle}
-            </span>
-            <h1 className="text-3xl font-semibold sm:text-4xl">
-              {hospital.name}
-            </h1>
-            <p className="max-w-2xl text-sm text-blue-100 sm:text-base">
-              {hospital.heroDescription}
-            </p>
-            <div className="mt-4 flex flex-wrap items-center gap-4 text-xs font-medium">
-              <span className="inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-blue-100 backdrop-blur-md">
-                <MapPin className="h-4 w-4" />
-                {hospital.location}
-              </span>
-              <a
-                href={`tel:${hospital.phone}`}
-                className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-white shadow-lg shadow-blue-900/40 transition hover:bg-blue-500"
-              >
-                <PhoneCall className="h-4 w-4" />
-                {hospital.phone}
-              </a>
-            </div>
-          </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl space-y-6 px-6 sm:px-8">
+      <section className="mx-auto max-w-6xl space-y-6 px-4 sm:px-6 lg:px-8">
         <header className="space-y-2 text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-blue-500">
             Center of Excellence

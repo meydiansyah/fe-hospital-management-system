@@ -30,9 +30,13 @@ import {
 } from "@/components/ui/dialog";
 
 export default function DoctorDetailPage() {
-  const params = useParams<{ slug: string }>();
-  const slugParam =
-    typeof params.slug === "string" ? params.slug : params.slug?.[0] ?? "";
+  const params = useParams();
+  // Handle params which can be string, string[], or undefined
+  const slugParam = Array.isArray(params.slug)
+    ? params.slug[0]
+    : typeof params.slug === "string"
+    ? params.slug
+    : "";
   const { t } = useTranslation();
 
   const doctor = useMemo(
@@ -87,7 +91,7 @@ export default function DoctorDetailPage() {
   }
 
   return (
-    <section className="mx-auto max-w-6xl pt-40 space-y-10 px-6 py-16 sm:px-8">
+    <section className="mx-auto max-w-6xl space-y-10 px-4 pt-32 pb-12 sm:px-6 lg:px-8 lg:pb-16">
       <Link
         href="/doctor"
         className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700"
@@ -96,10 +100,10 @@ export default function DoctorDetailPage() {
         {t("doctorDetail.backToList")}
       </Link>
 
-      <div className="grid gap-10 lg:grid-cols-[2fr_1fr]">
+      <div className="grid gap-10 lg:grid-cols-[2fr_1fr] lg:items-start">
         <div className="space-y-10">
-          <section className="flex flex-col gap-8 rounded-3xl border border-slate-100 bg-white p-8 shadow-lg shadow-blue-100/20 lg:flex-row lg:items-start">
-            <div className="relative h-40 w-40 self-center overflow-hidden rounded-3xl bg-blue-50 lg:self-start">
+          <section className="flex flex-col gap-8 rounded-3xl border border-slate-100 bg-white p-6 shadow-lg shadow-blue-100/20 sm:p-8 lg:flex-row lg:items-start">
+            <div className="relative h-32 w-32 self-center overflow-hidden rounded-3xl bg-blue-50 sm:h-40 sm:w-40 lg:self-start">
               <Image
                 src={doctor.image}
                 alt={doctor.name}
@@ -147,7 +151,7 @@ export default function DoctorDetailPage() {
             </div>
           </section>
 
-          <section className="space-y-6 rounded-3xl border border-slate-100 bg-white p-8 shadow-lg shadow-blue-100/20">
+          <section className="space-y-6 rounded-3xl border border-slate-100 bg-white p-6 shadow-lg shadow-blue-100/20 sm:p-8">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-slate-900">
                 {t("doctorDetail.scheduleTitle")}
@@ -210,7 +214,7 @@ export default function DoctorDetailPage() {
             </div>
           </section>
 
-          <section className="space-y-4 rounded-3xl border border-slate-100 bg-white p-8 shadow-lg shadow-blue-100/20">
+          <section className="space-y-4 rounded-3xl border border-slate-100 bg-white p-6 shadow-lg shadow-blue-100/20 sm:p-8">
             <h2 className="text-lg font-semibold text-slate-900">
               {t("doctorDetail.symptomsTitle")}
             </h2>
@@ -226,7 +230,7 @@ export default function DoctorDetailPage() {
             </div>
           </section>
 
-          <section className="space-y-4 rounded-3xl border border-slate-100 bg-white p-8 shadow-lg shadow-blue-100/20">
+          <section className="space-y-4 rounded-3xl border border-slate-100 bg-white p-6 shadow-lg shadow-blue-100/20 sm:p-8">
             <h2 className="text-lg font-semibold text-slate-900">
               {t("doctorDetail.proceduresTitle")}
             </h2>
@@ -243,7 +247,7 @@ export default function DoctorDetailPage() {
             </div>
           </section>
 
-          <section className="space-y-6 rounded-3xl border border-slate-100 bg-white p-8 shadow-lg shadow-blue-100/20">
+          <section className="space-y-6 rounded-3xl border border-slate-100 bg-white p-6 shadow-lg shadow-blue-100/20 sm:p-8">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-slate-900">
                 {t("doctorDetailSections.education")}
@@ -277,7 +281,7 @@ export default function DoctorDetailPage() {
           </section>
         </div>
 
-        <aside className="space-y-6 lg:sticky lg:top-40 self-start">
+        <aside className="space-y-6 self-start lg:sticky lg:top-32">
           <div className="rounded-3xl border border-rose-100 bg-white p-6 text-center shadow-xl shadow-rose-100/40">
             <p className="text-sm font-semibold text-rose-500">
               {t("doctorDetail.highlightTag")}
@@ -304,7 +308,7 @@ export default function DoctorDetailPage() {
         </aside>
       </div>
 
-      <section className="space-y-4 rounded-3xl border border-slate-100 bg-white p-8 shadow-lg shadow-blue-100/20">
+      <section className="space-y-4 rounded-3xl border border-slate-100 bg-white p-6 shadow-lg shadow-blue-100/20 sm:p-8">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-slate-900">
             {t("doctorDetailSections.otherDoctors.title")}
@@ -357,9 +361,9 @@ export default function DoctorDetailPage() {
       </section>
 
       <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-        <DialogContent className="max-w-6xl overflow-hidden rounded-3xl border-none p-0 shadow-2xl">
+        <DialogContent className="max-w-[95vw] overflow-hidden rounded-3xl border-none p-0 shadow-2xl sm:max-w-3xl lg:max-w-6xl">
           <div className="grid gap-0 lg:grid-cols-[3fr_2fr]">
-            <div className="border-r border-slate-100 bg-white p-6 sm:p-8">
+            <div className="border-b border-slate-100 bg-white p-6 sm:border-b-0 sm:border-r sm:p-8">
               <DialogHeader className="space-y-1 text-left">
                 <DialogTitle className="text-2xl text-slate-900">
                   {t("bookingModal.title")}
@@ -378,7 +382,7 @@ export default function DoctorDetailPage() {
                     {t("bookingModal.dateHint")}
                   </p>
                   <div className="mt-3 flex flex-col gap-4 rounded-2xl border border-slate-200 p-4 shadow-sm">
-                    <div className="flex items-center justify-between text-sm font-semibold text-slate-700">
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-sm font-semibold text-slate-700">
                       <span>
                         {selectedDate?.toLocaleDateString("id-ID", {
                           month: "long",
@@ -393,12 +397,13 @@ export default function DoctorDetailPage() {
                         {t("bookingModal.today")}
                       </button>
                     </div>
-                    <DayPicker
-                      mode="single"
-                      selected={selectedDate}
-                      onSelect={setSelectedDate}
-                      weekStartsOn={1}
-                      className="mx-auto rounded-xl bg-slate-50 p-2"
+                    <div className="overflow-x-auto">
+                      <DayPicker
+                        mode="single"
+                        selected={selectedDate}
+                        onSelect={setSelectedDate}
+                        weekStartsOn={1}
+                        className="mx-auto rounded-xl bg-slate-50 p-2"
                       classNames={{
                         months:
                           "flex flex-col gap-4 text-slate-700 [&>div]:flex [&>div]:justify-center",
@@ -419,8 +424,9 @@ export default function DoctorDetailPage() {
                       modifiers={{
                         disabled: { dayOfWeek: [0] },
                       }}
-                    />
-                    <div className="flex gap-4 text-xs text-slate-400">
+                      />
+                    </div>
+                    <div className="flex flex-wrap gap-4 text-xs text-slate-400">
                       <span className="inline-flex items-center gap-2">
                         <span className="h-2 w-2 rounded-full bg-blue-500" />
                         {t("bookingModal.available")}
@@ -462,8 +468,8 @@ export default function DoctorDetailPage() {
                 <p className="text-sm font-semibold text-slate-600">
                   {t("bookingModal.pickBranch")}
                 </p>
-                <div className="mt-3 flex gap-3 rounded-2xl border border-slate-200 p-4">
-                  <div className="relative h-16 w-24 overflow-hidden rounded-xl bg-slate-100">
+                <div className="mt-3 flex flex-col gap-3 rounded-2xl border border-slate-200 p-4 sm:flex-row">
+                  <div className="relative h-20 w-full overflow-hidden rounded-xl bg-slate-100 sm:h-16 sm:w-24">
                     <Image
                       src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=400&q=80&auto=format&fit=crop"
                       alt="Hospital Branch"
@@ -513,7 +519,7 @@ export default function DoctorDetailPage() {
                 </p>
               </div>
 
-              <DialogFooter className="flex-row justify-between pt-6">
+              <DialogFooter className="flex flex-col gap-3 pt-6 sm:flex-row sm:items-center sm:justify-between">
                 <DialogClose asChild>
                   <button
                     type="button"

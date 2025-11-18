@@ -112,8 +112,8 @@ export default function HospitalFacilitiesSection({
   };
 
   return (
-    <section className="bg-linear-to-b from-white via-blue-50/40 to-white py-16">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 sm:px-8">
+    <section className="bg-linear-to-b from-white via-blue-50/40 to-white py-12 lg:py-16">
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 sm:px-6 lg:px-8">
         <header className="text-center space-y-2">
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-blue-500">
             Fasilitas & Layanan

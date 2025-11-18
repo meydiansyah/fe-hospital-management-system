@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import type { RootState } from "@/store";
+import { RootState } from "@/store";
 import { transformArticle } from "@/lib/dataTransformers";
 
 interface BlogPost {
@@ -35,7 +36,7 @@ const BlogCard = ({
         alt={title}
         width={1300}
         height={900}
-        className="w-full rounded aspect-5/3 object-cover bg-gray-100 dark:bg-gray-900"
+        className="w-full rounded aspect-[5/3] object-cover bg-gray-100 dark:bg-gray-900"
       />
       <Link
         href={`/article/${slug}`}
@@ -65,20 +66,21 @@ const BlogCard = ({
   );
 };
 
-const BlogSection = () => {
+export default function ArticlePage() {
   const { t } = useTranslation();
   const { articles, articlesLoading } = useSelector(
     (state: RootState) => state.masterData
   );
 
-  const posts: BlogPost[] = articles
-    .filter((a) => a.status === "published" && a.published_at)
-    .slice(0, 3)
-    .map(transformArticle) as BlogPost[];
+  const posts: BlogPost[] = useMemo(() => {
+    return articles
+      .filter((a) => a.status === "published" && a.published_at)
+      .map(transformArticle) as BlogPost[];
+  }, [articles]);
 
   if (articlesLoading) {
     return (
-      <section className="py-20 bg-white dark:bg-gray-950">
+      <section className="py-20 bg-white dark:bg-gray-950 pt-32">
         <div className="max-w-7xl mx-auto px-5 sm:px-10 md:px-12 lg:px-5">
           <div className="text-center">
             <p className="text-gray-600">
@@ -90,56 +92,38 @@ const BlogSection = () => {
     );
   }
 
-  if (posts.length === 0) {
-    return null;
-  }
   return (
-    <section className="py-20 bg-white dark:bg-gray-950">
+    <section className="py-20 bg-white dark:bg-gray-950 pt-32">
       <div className="max-w-7xl mx-auto px-5 sm:px-10 md:px-12 lg:px-5 space-y-10">
         {/* Header */}
         <div className="flex flex-col md:flex-row gap-y-8 items-center text-center md:text-left md:items-start md:justify-between">
           <div className="text-center space-y-6 max-w-2xl mx-auto md:mx-0 md:text-left">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white capitalize">
-              {t("article.sectionTitle") || "Artikel Terbaru Kami"}
+              {t("article.title") || "Artikel Kesehatan"}
             </h1>
             <p className="text-gray-700 dark:text-gray-300 max-w-xl mx-auto md:mx-0">
-              {t("article.sectionDescription") ||
-                "Dapatkan wawasan terbaru, tips kesehatan, dan informasi medis dari tim ahli Sentra Medika Hospital Group."}
+              {t("article.description") ||
+                "Temukan artikel kesehatan terbaru, tips kesehatan, dan informasi medis dari tim ahli Sentra Medika Hospital Group."}
             </p>
-          </div>
-          <div>
-            <Link
-              href="/article"
-              className="px-5 py-2.5 border border-gray-200 dark:border-gray-800 text-blue-600 dark:text-gray-300 flex items-center gap-x-3 hover:text-blue-700 dark:hover:text-white transition"
-            >
-              {t("article.seeMore") || "Lihat Semua"}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-4 h-4"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
-                />
-              </svg>
-            </Link>
           </div>
         </div>
 
         {/* Blog Grid */}
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {posts.map((post) => (
-            <BlogCard key={post.id} {...post} />
-          ))}
-        </div>
+        {posts.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600">
+              {t("article.noArticles") || "Tidak ada artikel tersedia."}
+            </p>
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+            {posts.map((post) => (
+              <BlogCard key={post.id} {...post} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
-};
+}
 
-export default BlogSection;

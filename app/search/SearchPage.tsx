@@ -7,88 +7,15 @@ import { useTranslation } from "react-i18next";
 import { useMemo, useState } from "react";
 import clsx from "clsx";
 import { Search } from "lucide-react";
-import { doctorSummaries } from "@/data/doctors";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { transformDoctor, getDescription } from "@/lib/dataTransformers";
 
 type ListItem = {
   title: string;
   description: string;
   href: string;
 };
-
-const specialties: ListItem[] = [
-  {
-    title: "Bedah Anak - Subspesialis Anak Pediatri",
-    description: "Melakukan prosedur bedah pediatri.",
-    href: "#",
-  },
-  {
-    title: "Bedah Digestif",
-    description: "Fokus pada operasi saluran pencernaan.",
-    href: "#",
-  },
-  {
-    title: "Bedah Onkologi",
-    description: "Menangani tumor dan kanker melalui pembedahan.",
-    href: "#",
-  },
-];
-
-const specialOffers: ListItem[] = [
-  {
-    title: "Paket Medical Check Up Ramadhan",
-    description: "Sentra Medika Cibinong",
-    href: "#",
-  },
-  {
-    title: "Poli Holistik Lavender — RS Harapan Bunda",
-    description: "Harapan Bunda",
-    href: "#",
-  },
-  {
-    title: "Tes Sindroma Metabolik | Sentra Medika Cibinong",
-    description: "Sentra Medika Cibinong",
-    href: "#",
-  },
-];
-
-const centerOfExcellence: ListItem[] = [
-  {
-    title: "Suhenra Widyatomo Integrated Cancer Center",
-    description: "Layanan kanker terpadu dengan teknologi dan tenaga ahli.",
-    href: "#",
-  },
-  {
-    title: "Cardiovascular & Brain Center",
-    description: "Penanganan komprehensif penyakit jantung, otak, dan stroke.",
-    href: "#",
-  },
-  {
-    title: "Jakarta Timur Eye Center (JTEC)",
-    description: "Layanan komprehensif penyakit mata dengan tenaga ahli.",
-    href: "#",
-  },
-];
-
-const healthArticles: ListItem[] = [
-  {
-    title: "BMD (Bone Mineral Densitometry): Deteksi Dini Risiko Patah Tulang",
-    description:
-      "Deteksi kondisi tulang ‘silent disease’ karena tulang keropos tak dapat dirasakan hingga patah tulang terjadi.",
-    href: "#",
-  },
-  {
-    title: "Mengelola Hoarding Disorder: Ketika Menyimpan Menjadi Masalah",
-    description:
-      "Pelajari cara mengelola gangguan hoarding dan dampaknya terhadap kesehatan mental.",
-    href: "#",
-  },
-  {
-    title: "Yuk kenali Penyakit Paru Obstruktif Kronis (PPOK) sejak dini yuk?",
-    description:
-      "Kenali gejala, faktor risiko, dan pencegahan penyakit pernapasan kronis.",
-    href: "#",
-  },
-];
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
@@ -98,10 +25,142 @@ export default function SearchPage() {
   const queryParam = searchParams.get("query") || "";
   const [searchInput, setSearchInput] = useState(queryParam);
 
+  const {
+    doctors,
+    doctorsLoading,
+    specializations,
+    subSpecializations,
+    offers,
+    centerOfExcellences,
+    articles,
+    news,
+  } = useSelector((state: RootState) => state.masterData);
+
   const filters = useMemo(
     () => t("searchPage.filters", { returnObjects: true }) as string[],
     [t]
   );
+
+  // Filter data based on search query
+  const searchQuery = queryParam.toLowerCase().trim();
+
+  const filteredDoctors = useMemo(() => {
+    if (!searchQuery) return [];
+    return doctors
+      .filter((d) => d.status !== "inactive")
+      .filter(
+        (d) =>
+          d.full_name.toLowerCase().includes(searchQuery) ||
+          d.bio?.toLowerCase().includes(searchQuery) ||
+          d.specializations?.some((s) =>
+            getDescription(s.title).toLowerCase().includes(searchQuery)
+          )
+      )
+      .slice(0, 6)
+      .map((doctor) => {
+        const transformed = transformDoctor(doctor);
+        return {
+          slug: transformed.slug,
+          name: transformed.name,
+          title: transformed.specialty,
+          hospital: transformed.hospital,
+          image: transformed.image,
+        };
+      });
+  }, [doctors, searchQuery]);
+
+  const filteredSpecialties = useMemo(() => {
+    if (!searchQuery) return [];
+    const allSpecialties = [
+      ...specializations.map((s) => ({
+        title: getDescription(s.title),
+        description: getDescription(s.description),
+        href: `/doctor?specialty=${s.slug}`,
+      })),
+      ...subSpecializations.map((s) => ({
+        title: getDescription(s.title),
+        description: getDescription(s.description),
+        href: `/doctor?specialty=${s.slug}`,
+      })),
+    ];
+    return allSpecialties
+      .filter(
+        (s) =>
+          s.title.toLowerCase().includes(searchQuery) ||
+          s.description.toLowerCase().includes(searchQuery)
+      )
+      .slice(0, 3);
+  }, [specializations, subSpecializations, searchQuery]);
+
+  const filteredOffers = useMemo(() => {
+    if (!searchQuery) return [];
+    return offers
+      .filter((o) => o.is_active)
+      .filter(
+        (o) =>
+          o.title.toLowerCase().includes(searchQuery) ||
+          o.description.toLowerCase().includes(searchQuery) ||
+          o.name.toLowerCase().includes(searchQuery)
+      )
+      .slice(0, 3)
+      .map((offer) => ({
+        title: offer.title || offer.name,
+        description: offer.description,
+        href: `/offers/${offer.slug}`,
+      }));
+  }, [offers, searchQuery]);
+
+  const filteredCenterOfExcellence = useMemo(() => {
+    if (!searchQuery) return [];
+    return centerOfExcellences
+      .filter((c) => c.is_active)
+      .filter(
+        (c) =>
+          c.title.toLowerCase().includes(searchQuery) ||
+          c.description.toLowerCase().includes(searchQuery) ||
+          c.name.toLowerCase().includes(searchQuery)
+      )
+      .slice(0, 3)
+      .map((coe) => ({
+        title: coe.title,
+        description: coe.description,
+        href: `/center-of-excellence/${coe.slug}`,
+      }));
+  }, [centerOfExcellences, searchQuery]);
+
+  const filteredArticles = useMemo(() => {
+    if (!searchQuery) return [];
+    return articles
+      .filter((a) => a.is_featured && a.published_at)
+      .filter(
+        (a) =>
+          a.title.toLowerCase().includes(searchQuery) ||
+          a.description.toLowerCase().includes(searchQuery)
+      )
+      .slice(0, 3)
+      .map((article) => ({
+        title: article.title,
+        description: article.description,
+        href: `/articles/${article.slug}`,
+      }));
+  }, [articles, searchQuery]);
+
+  const filteredNews = useMemo(() => {
+    if (!searchQuery) return [];
+    return news
+      .filter((n) => n.is_featured && n.published_at)
+      .filter(
+        (n) =>
+          n.title.toLowerCase().includes(searchQuery) ||
+          n.description.toLowerCase().includes(searchQuery)
+      )
+      .slice(0, 3)
+      .map((newsItem) => ({
+        title: newsItem.title,
+        description: newsItem.description,
+        href: `/news/${newsItem.slug}`,
+      }));
+  }, [news, searchQuery]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -162,38 +221,53 @@ export default function SearchPage() {
             {t("searchPage.sections.seeAllDoctors")}
           </Link>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {doctorSummaries.map((doctor) => (
-            <Link
-              key={doctor.slug}
-              href={`/doctor/${doctor.slug}`}
-              className="group flex h-full flex-col justify-between rounded-3xl border border-slate-100 bg-white p-5 shadow-md shadow-slate-200/30 transition hover:border-blue-200 hover:shadow-lg"
-            >
-              <div className="flex items-start gap-4">
-                <div className="relative h-20 w-20 overflow-hidden rounded-2xl bg-blue-50">
-                  <Image
-                    src={doctor.image}
-                    alt={doctor.name}
-                    fill
-                    className="object-cover"
-                  />
+        {doctorsLoading ? (
+          <div className="text-center py-8">
+            <p className="text-sm text-slate-500">Memuat data dokter...</p>
+          </div>
+        ) : filteredDoctors.length > 0 ? (
+          <div className="grid gap-4 sm:grid-cols-2">
+            {filteredDoctors.map((doctor) => (
+              <Link
+                key={doctor.slug}
+                href={`/doctor/${doctor.slug}`}
+                className="group flex h-full flex-col justify-between rounded-3xl border border-slate-100 bg-white p-5 shadow-md shadow-slate-200/30 transition hover:border-blue-200 hover:shadow-lg"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="relative h-20 w-20 overflow-hidden rounded-2xl bg-blue-50">
+                    <Image
+                      src={doctor.image}
+                      alt={doctor.name}
+                      fill
+                      className="object-cover"
+                      sizes="80px"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-base font-semibold text-slate-900">
+                      {doctor.name}
+                    </h3>
+                    <p className="text-sm text-slate-500">{doctor.title}</p>
+                    <p className="text-sm font-medium text-blue-600">
+                      {doctor.hospital}
+                    </p>
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <h3 className="text-base font-semibold text-slate-900">
-                    {doctor.name}
-                  </h3>
-                  <p className="text-sm text-slate-500">{doctor.title}</p>
-                  <p className="text-sm font-medium text-blue-600">
-                    {doctor.hospital}
-                  </p>
-                </div>
-              </div>
-              <span className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-blue-600 px-4 py-2 text-xs font-semibold text-white transition group-hover:bg-blue-700">
-                {t("searchPage.doctorCard.book")}
-              </span>
-            </Link>
-          ))}
-        </div>
+                <span className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-blue-600 px-4 py-2 text-xs font-semibold text-white transition group-hover:bg-blue-700">
+                  {t("searchPage.doctorCard.book")}
+                </span>
+              </Link>
+            ))}
+          </div>
+        ) : searchQuery ? (
+          <p className="text-sm text-slate-500">
+            Tidak ada dokter yang ditemukan untuk &quot;{queryParam}&quot;.
+          </p>
+        ) : (
+          <p className="text-sm text-slate-500">
+            Masukkan kata kunci untuk mencari dokter.
+          </p>
+        )}
       </section>
 
       <section className="space-y-4">
@@ -208,41 +282,56 @@ export default function SearchPage() {
             {t("searchPage.sections.seeAll")}
           </Link>
         </div>
-        <div className="space-y-3">
-          {specialties.map((item) => (
-            <Link
-              key={item.title}
-              href={item.href}
-              className="flex items-center justify-between rounded-2xl border border-slate-100 bg-blue-50/40 p-4 text-sm text-slate-600 transition hover:border-blue-200 hover:bg-blue-50"
-            >
-              <div>
-                <p className="font-semibold text-slate-900">{item.title}</p>
-                <p className="text-xs text-slate-500">{item.description}</p>
-              </div>
-              <span className="rounded-full bg-white px-3 py-1 text-[11px] font-medium text-blue-600 shadow-sm">
-                {t("searchPage.specialtyTag")}
-              </span>
-            </Link>
-          ))}
-        </div>
+        {filteredSpecialties.length > 0 ? (
+          <div className="space-y-3">
+            {filteredSpecialties.map((item) => (
+              <Link
+                key={item.title}
+                href={item.href}
+                className="flex items-center justify-between rounded-2xl border border-slate-100 bg-blue-50/40 p-4 text-sm text-slate-600 transition hover:border-blue-200 hover:bg-blue-50"
+              >
+                <div>
+                  <p className="font-semibold text-slate-900">{item.title}</p>
+                  <p className="text-xs text-slate-500">{item.description}</p>
+                </div>
+                <span className="rounded-full bg-white px-3 py-1 text-[11px] font-medium text-blue-600 shadow-sm">
+                  {t("searchPage.specialtyTag")}
+                </span>
+              </Link>
+            ))}
+          </div>
+        ) : searchQuery ? (
+          <p className="text-sm text-slate-500">
+            Tidak ada spesialisasi yang ditemukan untuk &quot;{queryParam}
+            &quot;.
+          </p>
+        ) : (
+          <p className="text-sm text-slate-500">
+            Masukkan kata kunci untuk mencari spesialisasi.
+          </p>
+        )}
       </section>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <SearchListSection
           title={t("searchPage.sections.specialOffers")}
-          items={specialOffers}
+          items={filteredOffers}
+          searchQuery={searchQuery}
         />
         <SearchListSection
           title={t("searchPage.sections.coe")}
-          items={centerOfExcellence}
+          items={filteredCenterOfExcellence}
+          searchQuery={searchQuery}
         />
         <SearchListSection
           title={t("searchPage.sections.healthArticles")}
-          items={healthArticles}
+          items={filteredArticles}
+          searchQuery={searchQuery}
         />
         <SearchListSection
           title={t("searchPage.sections.news")}
-          items={[]}
+          items={filteredNews}
+          searchQuery={searchQuery}
           emptyState={t("searchPage.sections.noResults")}
         />
       </div>
@@ -253,10 +342,12 @@ export default function SearchPage() {
 function SearchListSection({
   title,
   items,
+  searchQuery,
   emptyState,
 }: {
   title: string;
   items: ListItem[];
+  searchQuery: string;
   emptyState?: string;
 }) {
   return (
@@ -273,13 +364,17 @@ function SearchListSection({
           Semua
         </Link>
       </div>
-      {items.length === 0 && emptyState ? (
-        <p className="text-sm text-slate-500">{emptyState}</p>
+      {items.length === 0 ? (
+        <p className="text-sm text-slate-500">
+          {searchQuery
+            ? emptyState || `Tidak ada hasil untuk "${searchQuery}".`
+            : "Masukkan kata kunci untuk mencari."}
+        </p>
       ) : (
         <div className="space-y-3">
-          {items.map((item) => (
+          {items.map((item, index) => (
             <Link
-              key={item.title}
+              key={`${item.title}-${index}`}
               href={item.href}
               className="flex flex-col rounded-2xl border border-transparent bg-blue-50/30 p-4 text-sm transition hover:border-blue-100 hover:bg-blue-50"
             >

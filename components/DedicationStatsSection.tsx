@@ -9,13 +9,13 @@ const stats = [
 
 export default function DedicationStatsSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-[#041261] via-[#0024a1] to-[#0084ff] py-16 text-white">
+    <section className="relative overflow-hidden bg-gradient-to-r from-[#041261] via-[#0024a1] to-[#0084ff] py-12 text-white lg:py-16">
       <div className="absolute inset-0 opacity-80">
         <div className="absolute -top-20 -left-32 h-64 w-64 rounded-full bg-gradient-to-br from-red-500/80 to-transparent blur-3xl" />
         <div className="absolute -bottom-32 -right-24 h-72 w-72 rounded-full bg-gradient-to-br from-blue-200/40 to-transparent blur-3xl" />
       </div>
 
-      <div className="relative mx-auto flex max-w-6xl flex-col gap-10 px-6 sm:px-8 lg:flex-row lg:items-center">
+      <div className="relative mx-auto flex max-w-6xl flex-col gap-10 px-4 sm:px-6 lg:flex-row lg:items-center lg:px-8">
         <div className="grid flex-1 gap-8 sm:grid-cols-2">
           {stats.map((stat) => (
             <div key={stat.label} className="space-y-2">

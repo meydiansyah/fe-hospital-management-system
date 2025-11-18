@@ -1,12 +1,14 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
 interface ArticleCardProps {
   cover: string;
   published_at: string;
   title: string;
   summary: string;
+  slug: string;
 }
 
 export default function ArticleCard({
@@ -14,10 +16,11 @@ export default function ArticleCard({
   published_at,
   title,
   summary,
+  slug,
 }: ArticleCardProps) {
   return (
-    <a
-      href="#"
+    <Link
+      href={`/article/${slug}`}
       className="flex p-px flex-col bg-gray-100 dark:bg-gray-900 group border border-gray-200 dark:border-gray-800 rounded-lg"
     >
       <div className="flex rounded-[7px] bg-gray-300 dark:bg-gray-700 overflow-hidden">
@@ -55,6 +58,6 @@ export default function ArticleCard({
           <span>{published_at}</span>
         </div>
       </div>
-    </a>
+    </Link>
   );
 }

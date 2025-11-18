@@ -1,78 +1,87 @@
-import { t } from "i18next";
-import ArticleCard from "./ArticleCard";
+"use client";
 
-const posts = [
-  {
-    id: 1,
-    cover:
-      "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80",
-    published_at: "Jun 12, 2021",
-    title: "How to Structure Your React Application Like a Legend",
-    summary:
-      "Learn how to organize your React app architecture for scalability, readability, and maintainability.",
-  },
-  {
-    id: 2,
-    cover:
-      "https://images.unsplash.com/photo-1506765515384-028b60a970df?auto=format&fit=crop&w=800&q=80",
-    published_at: "Jun 12, 2021",
-    title: "You're Probably Fetching Data in the Wrong Way",
-    summary:
-      "Explore modern data fetching patterns and how to optimize API calls for better performance.",
-  },
-  {
-    id: 3,
-    cover:
-      "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=800&q=80",
-    published_at: "Jun 14, 2021",
-    title: "10 Mistakes Developers Make When Using Next.js",
-    summary:
-      "Avoid these common pitfalls and improve your Next.js development experience.",
-  },
-];
+import Link from "next/link";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/store";
+import ArticleCard from "./ArticleCard";
+import { transformArticle } from "@/lib/dataTransformers";
 
 export default function ArticleSection() {
+  const { t } = useTranslation();
+  const { articles, articlesLoading } = useSelector(
+    (state: RootState) => state.masterData
+  );
+
+  const posts = articles
+    .filter((a) => a.status === "published" && a.published_at)
+    .slice(0, 3)
+    .map(transformArticle);
+
+  if (articlesLoading) {
+    return (
+      <section className="py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl space-y-12 px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-slate-600">
+              {t("article.loading") || "Memuat artikel..."}
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (posts.length === 0) {
+    return null;
+  }
   return (
-    <section className="min-h-screen my-auto flex items-center">
-      <div className="max-w-7xl mx-auto px-5 sm:px-10 md:px-12 lg:px-5 space-y-14">
+    <section className="py-12 sm:py-16">
+      <div className="mx-auto max-w-7xl space-y-12 px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center space-y-6 max-w-2xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white capitalize">
-            Our Most Recent Articles
-          </h1>
-          <p className="text-gray-700 dark:text-gray-300">
-            Discover insights, tutorials, and guides written by developers for
-            developers.
-          </p>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="space-y-2">
+            <h2 className="text-3xl font-semibold text-slate-900 sm:text-4xl">
+              {t("article.sectionTitle") || "Artikel Terbaru Kami"}
+            </h2>
+            <p className="text-sm text-slate-500 sm:max-w-lg">
+              {t("article.sectionDescription") ||
+                "Temukan wawasan kesehatan, tips medis, dan panduan dari tim ahli Sentra Medika Hospital Group."}
+            </p>
+          </div>
         </div>
 
         {/* Articles */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 rounded-t-lg">
+        <div className="grid grid-cols-1 gap-8 rounded-t-lg sm:grid-cols-2 lg:grid-cols-3">
           {posts.slice(0, 2).map((post) => (
             <ArticleCard key={post.id} {...post} />
           ))}
 
           {/* Newsletter Card */}
           <div className="sm:col-span-2 lg:col-span-1 p-6 sm:p-10 md:p-14 lg:p-8 rounded-lg bg-gray-100 dark:bg-gray-900 flex flex-col space-y-6 relative overflow-hidden">
-            <div className="absolute w-14 h-14 rounded-full bg-gradient-to-bl from-blue-600 to-violet-500 blur-2xl -top-7 -left-7 opacity-40"></div>
-            <div className="absolute w-14 h-14 rounded-full bg-gradient-to-bl from-blue-600 to-violet-500 blur-2xl -bottom-7 -right-7 opacity-40"></div>
+            <div className="absolute w-14 h-14 rounded-full bg-linear-to-bl from-blue-600 to-violet-500 blur-2xl -top-7 -left-7 opacity-40"></div>
+            <div className="absolute w-14 h-14 rounded-full bg-linear-to-bl from-blue-600 to-violet-500 blur-2xl -bottom-7 -right-7 opacity-40"></div>
 
             <div className="lg:h-full flex flex-col items-center text-center justify-center space-y-5 mx-auto max-w-2xl">
               <h1 className="font-bold text-gray-900 dark:text-white text-3xl">
-                Join other{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-bl from-blue-700 to-violet-400 dark:from-blue-300 dark:to-violet-400">
-                  600 Amazing
+                {t("article.newsletter.title") || "Bergabung dengan"}{" "}
+                <span className="text-transparent bg-clip-text bg-linear-to-bl from-blue-700 to-violet-400 dark:from-blue-300 dark:to-violet-400">
+                  {t("article.newsletter.highlight") || "Ribuan Pasien"}
                 </span>{" "}
-                developers
+                {t("article.newsletter.subtitle") || "yang Percaya"}
               </h1>
               <p className="text-gray-700 dark:text-gray-300 text-center">
-                Subscribe to our newsletter for the latest articles and updates.
+                {t("article.newsletter.description") ||
+                  "Berlangganan newsletter kami untuk mendapatkan artikel dan update terbaru."}
               </p>
               <div className="w-full flex flex-col sm:items-center sm:flex-row lg:flex-col gap-y-3 gap-x-4">
                 <div className="flex justify-center w-full sm:w-max lg:w-full">
-                  <button className="py-3 rounded-lg px-6 bg-blue-600 dark:bg-blue-500 text-white font-medium text-base w-full flex justify-center">
-                    {t("find_more")}
-                  </button>
+                  <Link
+                    href="/article"
+                    className="py-3 rounded-lg px-6 bg-blue-600 dark:bg-blue-500 text-white font-medium text-base w-full flex justify-center hover:bg-blue-700 transition"
+                  >
+                    {t("article.seeMore") || "Lihat Semua Artikel"}
+                  </Link>
                 </div>
               </div>
             </div>

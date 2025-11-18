@@ -2,56 +2,38 @@
 
 import Link from "next/link";
 import { MapPin } from "lucide-react";
-
-const hospitals = [
-  {
-    distance: "12 KM",
-    name: "Harapan Bunda Hospital",
-    location: "Jakarta Timur, DKI Jakarta",
-    direction: "https://maps.google.com",
-    profile: "/hospital/harapan-bunda",
-  },
-  {
-    distance: "24 KM",
-    name: "Sentra Medika Hospital Cibinong",
-    location: "Bogor, Jawa Barat",
-    direction: "https://maps.google.com",
-    profile: "/hospital/cibinong",
-  },
-  {
-    distance: "28 KM",
-    name: "Sentra Medika Hospital Cikarang",
-    location: "Bekasi, Jawa Barat",
-    direction: "https://maps.google.com",
-    profile: "/hospital/cikarang",
-  },
-  {
-    distance: "32 KM",
-    name: "Sentra Medika Hospital Cisalak",
-    location: "Depok, Jawa Barat",
-    direction: "https://maps.google.com",
-    profile: "/hospital/cisalak",
-  },
-  {
-    distance: "64 KM",
-    name: "Sentra Medika Hospital Gempol",
-    location: "Cirebon, Jawa Barat",
-    direction: "https://maps.google.com",
-    profile: "/hospital/gempol",
-  },
-  {
-    distance: "120 KM",
-    name: "Sentra Medika Hospital Minahasa Utara",
-    location: "Minahasa Utara, Sulawesi Utara",
-    direction: "https://maps.google.com",
-    profile: "/hospital/minahasa-utara",
-  },
-];
+import { useSelector } from "react-redux";
+import type { RootState } from "@/store";
+import { transformHospital } from "@/lib/dataTransformers";
 
 export default function HospitalPage() {
+  const { hospitals, hospitalsLoading } = useSelector(
+    (state: RootState) => state.masterData
+  );
+
+  if (hospitalsLoading) {
+    return (
+      <section className="bg-white pt-32 pb-12">
+        <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-slate-600">Memuat data rumah sakit...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const transformedHospitals = hospitals
+    .filter((h) => h.is_active)
+    .map((hospital) => {
+      const transformed = transformHospital(hospital);
+      // Mock distance calculation (can be enhanced with user location)
+      const distance = "12 KM"; // Placeholder
+      return { ...transformed, distance };
+    });
   return (
-    <section className="bg-white py-16 max-w-7xl mx-auto pt-40">
-      <div className="mx-auto flex max-w-6xl flex-col gap-10 px-6 sm:px-8">
+    <section className="bg-white pt-32 pb-12">
+      <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-2">
             <span className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-red-500">
@@ -73,9 +55,9 @@ export default function HospitalPage() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {hospitals.map((hospital) => (
+          {transformedHospitals.map((hospital) => (
             <div
-              key={hospital.name}
+              key={hospital.id}
               className="flex h-full flex-col justify-between rounded-3xl border border-blue-100 bg-white p-6 shadow-md shadow-blue-100/30 transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg"
             >
               <div className="space-y-4">

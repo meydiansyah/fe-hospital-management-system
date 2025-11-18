@@ -1,39 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  CalendarCheck,
-  Building2,
-  UserCircle2,
-  MessageCircle,
-  Search,
-} from "lucide-react";
-
-const quickLinks = [
-  {
-    icon: CalendarCheck,
-    href: "/appointment",
-    translationKey: "searchSection.links.appointment",
-  },
-  {
-    icon: Building2,
-    href: "/hospital",
-    translationKey: "searchSection.links.hospital",
-  },
-  {
-    icon: UserCircle2,
-    href: "/profile",
-    translationKey: "searchSection.links.profile",
-  },
-  {
-    icon: MessageCircle,
-    href: "/chat",
-    translationKey: "searchSection.links.chat",
-  },
-];
+import { Search } from "lucide-react";
 
 export default function SearchSection() {
   const { t } = useTranslation();
@@ -48,7 +18,7 @@ export default function SearchSection() {
   };
 
   return (
-    <section className="mx-auto max-w-5xl space-y-8 px-6 py-16">
+    <section className="mx-auto max-w-5xl space-y-8 px-4 py-12 sm:px-6 lg:py-16">
       <header className="text-center">
         <h2 className="text-2xl font-semibold text-slate-900 sm:text-[26px]">
           {t("searchSection.titleLine1")}

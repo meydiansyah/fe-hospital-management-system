@@ -49,7 +49,7 @@ const HeroSection = () => {
   const current = slides[currentSlide];
 
   return (
-    <section className="relative pt-40 min-h-screen overflow-hidden bg-white">
+    <section className="relative overflow-hidden bg-white pt-32 sm:pt-36 lg:pt-40">
       <div className="absolute inset-0">
         <div className="mx-auto grid h-full w-full grid-cols-1 lg:grid-cols-2">
           <div />
@@ -79,18 +79,18 @@ const HeroSection = () => {
         }}
       />
 
-      <div className="relative z-10 mx-auto grid min-h-[640px] max-w-7xl grid-cols-1 gap-12 px-6 pb-16 pt-28 sm:px-10 lg:grid-cols-2 lg:items-center lg:gap-20 lg:pb-24 lg:pt-36">
-        <div className="relative">
-          <div className="mb-8 flex items-center gap-4">
+      <div className="relative z-10 mx-auto grid min-h-[520px] max-w-7xl grid-cols-1 gap-10 px-4 pb-12 pt-16 sm:px-6 sm:pb-16 sm:pt-20 lg:grid-cols-2 lg:items-center lg:gap-20 lg:px-8 lg:pb-24 lg:pt-24">
+        <div className="relative space-y-10">
+          <div className="flex flex-wrap items-center gap-4">
             <Image
               src="/smhg-logo.webp"
               alt={t("hero.brandAlt")}
               width={120}
               height={44}
-              className="h-10 w-auto"
+              className="h-8 w-auto sm:h-10"
               priority
             />
-            <div className="rounded-full border border-red-200 px-4 py-1 text-sm font-semibold uppercase tracking-wide text-red-600">
+            <div className="rounded-full border border-red-200 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-red-600 sm:text-sm">
               {current?.badge ?? "SWICC"}
             </div>
           </div>
@@ -105,16 +105,16 @@ const HeroSection = () => {
                     : "translate-y-6 opacity-0"
                 }`}
               >
-                <p className="text-sm font-semibold uppercase tracking-[0.28em] text-blue-700">
+                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-blue-700 sm:text-sm">
                   {slide.tagline}
                 </p>
-                <h1 className="text-4xl font-bold leading-tight text-blue-950 sm:text-5xl lg:text-[3.25rem]">
+                <h1 className="text-3xl font-bold leading-tight text-blue-950 sm:text-4xl lg:text-[3.25rem]">
                   {slide.title}
                 </h1>
-                <p className="text-lg leading-relaxed text-slate-600 sm:text-xl">
+                <p className="text-base leading-relaxed text-slate-600 sm:text-lg lg:text-xl">
                   {slide.description}
                 </p>
-                <div className="flex flex-wrap items-center gap-5 pt-2">
+                <div className="flex flex-wrap items-center gap-4 pt-2">
                   <Link
                     href="#swicc"
                     className="inline-flex items-center rounded-full bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-red-400/40 transition hover:bg-red-700"
@@ -131,10 +131,10 @@ const HeroSection = () => {
           </div>
         </div>
 
-        <div className="relative hidden lg:block" />
+        <div className="relative hidden min-h-[420px] lg:block" />
       </div>
 
-      <div className="relative z-10 flex items-center justify-center gap-3 pb-12">
+      <div className="relative z-10 flex items-center justify-center gap-3 px-4 pb-10 sm:pb-12">
         {slides.map((_, index) => (
           <button
             key={`dot-${index}`}

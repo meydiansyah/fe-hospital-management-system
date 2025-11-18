@@ -1,7 +1,9 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { Search, Building2, X } from "lucide-react";
+import { Search, Building2, Filter, X } from "lucide-react";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/store";
 import {
   Select,
   SelectContent,
@@ -11,9 +13,13 @@ import {
 } from "@/components/ui/select";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { slugify } from "@/lib/utils";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 // ==== Types ====
+import { transformDoctor } from "@/lib/dataTransformers";
+
 interface Doctor {
   id: number;
   name: string;
@@ -108,37 +114,34 @@ const mockDoctors: Doctor[] = [
   },
 ];
 
-// ==== Custom Store (Mock Redux Slice) ====
+// ==== Custom Store (Using Redux) ====
 const useDoctorStore = () => {
-  const [doctors, setDoctors] = useState<Doctor[]>(mockDoctors);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [useMockData, setUseMockData] = useState<boolean>(true);
+  const { doctors: apiDoctors, doctorsLoading } = useSelector(
+    (state: RootState) => state.masterData
+  );
+  
+  const transformedDoctors: Doctor[] = apiDoctors
+    .filter((d) => d.status !== "inactive")
+    .map((doctor) => {
+      const transformed = transformDoctor(doctor);
+      return {
+        id: transformed.id,
+        name: transformed.name,
+        slug: transformed.slug,
+        specialty: transformed.specialty,
+        subspecialty: transformed.subspecialty,
+        hospital: transformed.hospital,
+        image: transformed.image,
+      };
+    });
 
-  const fetchDoctors = async (filters: Partial<Filters> = {}) => {
-    if (useMockData) {
-      setDoctors(mockDoctors);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const queryParams = new URLSearchParams(
-        filters as Record<string, string>
-      ).toString();
-      const response = await fetch(`/api/doctors?${queryParams}`);
-      const data = await response.json();
-      setDoctors(data.doctors || []);
-      setError(null);
-    } catch (err: unknown) {
-      if (err instanceof Error) setError(err.message);
-      setDoctors(mockDoctors);
-    } finally {
-      setLoading(false);
-    }
+  return {
+    doctors: transformedDoctors.length > 0 ? transformedDoctors : mockDoctors,
+    loading: doctorsLoading,
+    error: null,
+    useMockData: transformedDoctors.length === 0,
+    setUseMockData: () => {},
   };
-
-  return { doctors, loading, error, fetchDoctors, useMockData, setUseMockData };
 };
 
 // ==== Dropdown Component ====
@@ -216,11 +219,141 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
   );
 };
 
+interface FiltersContentProps {
+  searchQuery: string;
+  setSearchQuery: (value: string) => void;
+  filters: Filters;
+  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
+  useMockData: boolean;
+  setUseMockData: (value: boolean) => void;
+  onReset: () => void;
+  t: TFunction;
+}
+
+const FiltersContent: React.FC<FiltersContentProps> = ({
+  searchQuery,
+  setSearchQuery,
+  filters,
+  setFilters,
+  useMockData,
+  setUseMockData,
+  onReset,
+  t,
+}) => (
+  <div className="space-y-6">
+    <div>
+      <div className="relative">
+        <input
+          type="text"
+          placeholder={t("search_placeholder")}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full rounded-lg border border-gray-300 py-2 pl-12 pr-4 text-sm text-gray-700 transition focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200"
+        />
+        <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+      </div>
+    </div>
+
+    <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+      <h2 className="text-lg font-semibold text-gray-900">
+        {t("doctor_page.filters_title")}
+      </h2>
+      <button
+        onClick={onReset}
+        className="flex items-center gap-1 text-sm font-medium text-red-600 transition hover:text-red-700"
+      >
+        <X className="h-4 w-4" />
+        {t("doctor_page.reset")}
+      </button>
+    </div>
+
+    <div className="space-y-4">
+      <Dropdown
+        label="Lokasi"
+        value={filters.location}
+        onChange={(val) => setFilters((prev) => ({ ...prev, location: val }))}
+        options={[
+          "Semua Rumah Sakit",
+          "Sentra Medika Cisalak",
+          "Sentra Medika Cibinong",
+        ]}
+        placeholder="Semua Rumah Sakit"
+      />
+
+      <Dropdown
+        label="Spesialis"
+        value={filters.specialty}
+        onChange={(val) => setFilters((prev) => ({ ...prev, specialty: val }))}
+        options={[
+          "Semua Spesialis",
+          "Penyakit Dalam",
+          "Bedah",
+          "Anak",
+          "Jantung",
+        ]}
+        placeholder="Semua Spesialis"
+      />
+
+      <Dropdown
+        label="Subspesialis"
+        value={filters.subspecialty}
+        onChange={(val) =>
+          setFilters((prev) => ({ ...prev, subspecialty: val }))
+        }
+        options={[
+          "Semua Subspesialis",
+          "Hemotologi Oknologi Medik",
+          "Gastroenterologi",
+        ]}
+        placeholder="Semua Subspesialis"
+      />
+
+      <Dropdown
+        label="Jenis Kelamin"
+        value={filters.gender}
+        onChange={(val) => setFilters((prev) => ({ ...prev, gender: val }))}
+        options={["Semua", "Laki-laki", "Perempuan"]}
+        placeholder="Semua"
+      />
+
+      <Dropdown
+        label="Jadwal Ketersediaan Praktek"
+        value={filters.availability}
+        onChange={(val) =>
+          setFilters((prev) => ({ ...prev, availability: val }))
+        }
+        options={[
+          "Semua Hari",
+          "Senin",
+          "Selasa",
+          "Rabu",
+          "Kamis",
+          "Jumat",
+          "Sabtu",
+          "Minggu",
+        ]}
+        placeholder="Semua Hari"
+      />
+    </div>
+
+    <div className="border-t border-gray-200 pt-4">
+      <label className="flex items-center gap-2 text-sm text-gray-700">
+        <input
+          type="checkbox"
+          checked={useMockData}
+          onChange={(e) => setUseMockData(e.target.checked)}
+          className="h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
+        />
+        Gunakan data simulasi
+      </label>
+    </div>
+  </div>
+);
+
 // ==== Main Component ====
 const DoctorSearch: React.FC = () => {
   const { t } = useTranslation();
-  const { doctors, loading, fetchDoctors, useMockData, setUseMockData } =
-    useDoctorStore();
+  const { doctors, loading, useMockData, setUseMockData } = useDoctorStore();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filters, setFilters] = useState<Filters>({
     location: "",
@@ -229,6 +362,7 @@ const DoctorSearch: React.FC = () => {
     gender: "",
     availability: "",
   });
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   // useEffect(() => {
   //   fetchDoctors(filters);
@@ -250,150 +384,102 @@ const DoctorSearch: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100 mt-30">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gray-100 pt-32 pb-12">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+        <div className="mb-6 text-center md:text-left">
+          <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
             {t("doctor_page.title")}
           </h1>
-          <p className="text-gray-600">{t("doctor_page.subtitle")}</p>
+          <p className="mt-2 text-sm text-gray-600 sm:text-base">
+            {t("doctor_page.subtitle")}
+          </p>
         </div>
 
-        <div className="flex gap-8">
-          {/* Sidebar Filters */}
-          <div className="w-96 shrink-0">
-            <div className="bg-white rounded-lg border border-gray-200 p-6 sticky top-40">
-              {/* Search Input */}
-              <div className="mb-6">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder={t("search_placeholder")}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                  />
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                </div>
-              </div>
-
-              {/* Filter Header */}
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">
+        {/* Mobile filter trigger */}
+        <div className="mb-6 md:hidden">
+          <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+            <div className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm">
+              <div>
+                <p className="text-sm font-semibold text-gray-900">
                   {t("doctor_page.filters_title")}
-                </h2>
+                </p>
+                <p className="text-xs text-gray-500">
+                  {t("doctor_page.subtitle")}
+                </p>
+              </div>
+              <SheetTrigger asChild>
                 <button
-                  onClick={handleResetFilters}
-                  className="text-red-600 text-sm flex items-center gap-1 hover:text-red-700"
+                  type="button"
+                  className="inline-flex items-center gap-2 rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
                 >
-                  <X className="w-4 h-4" />
-                  {t("doctor_page.reset")}
+                  <Filter className="h-4 w-4" />
+                  {t("doctor_page.open_filters", { defaultValue: "Filter" })}
                 </button>
-              </div>
-
-              {/* Filters */}
-              <div className="space-y-4">
-                <Dropdown
-                  label="Lokasi"
-                  value={filters.location}
-                  onChange={(val) => setFilters({ ...filters, location: val })}
-                  options={[
-                    "Semua Rumah Sakit",
-                    "Sentra Medika Cisalak",
-                    "Sentra Medika Cibinong",
-                  ]}
-                  placeholder="Semua Rumah Sakit"
-                />
-
-                <Dropdown
-                  label="Spesialis"
-                  value={filters.specialty}
-                  onChange={(val) => setFilters({ ...filters, specialty: val })}
-                  options={[
-                    "Semua Spesialis",
-                    "Penyakit Dalam",
-                    "Bedah",
-                    "Anak",
-                    "Jantung",
-                  ]}
-                  placeholder="Semua Spesialis"
-                />
-
-                <Dropdown
-                  label="Subspesialis"
-                  value={filters.subspecialty}
-                  onChange={(val) =>
-                    setFilters({ ...filters, subspecialty: val })
-                  }
-                  options={[
-                    "Semua Subspesialis",
-                    "Hemotologi Oknologi Medik",
-                    "Gastroenterologi",
-                  ]}
-                  placeholder="Semua Subspesialis"
-                />
-
-                <Dropdown
-                  label="Jenis Kelamin"
-                  value={filters.gender}
-                  onChange={(val) => setFilters({ ...filters, gender: val })}
-                  options={["Semua", "Laki-laki", "Perempuan"]}
-                  placeholder="Semua"
-                />
-
-                <Dropdown
-                  label="Jadwal Ketersediaan Praktek"
-                  value={filters.availability}
-                  onChange={(val) =>
-                    setFilters({ ...filters, availability: val })
-                  }
-                  options={[
-                    "Semua Hari",
-                    "Senin",
-                    "Selasa",
-                    "Rabu",
-                    "Kamis",
-                    "Jumat",
-                    "Sabtu",
-                    "Minggu",
-                  ]}
-                  placeholder="Semua Hari"
-                />
-              </div>
-
-              {/* Data Source Toggle */}
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={useMockData}
-                    onChange={(e) => setUseMockData(e.target.checked)}
-                    className="w-4 h-4 text-red-600 rounded focus:ring-red-500"
-                  />
-                  <span className="text-sm text-gray-700">Use Mock Data</span>
-                </label>
-              </div>
+              </SheetTrigger>
             </div>
-          </div>
+            <SheetContent
+              side="left"
+              className="w-full max-w-md overflow-y-auto px-6 pb-10 pt-8"
+            >
+              <FiltersContent
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                filters={filters}
+                setFilters={setFilters}
+                useMockData={useMockData}
+                setUseMockData={setUseMockData}
+                onReset={handleResetFilters}
+                t={t}
+              />
+            </SheetContent>
+          </Sheet>
+        </div>
+
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
+          {/* Sidebar Filters */}
+          <aside className="hidden w-full max-w-xs shrink-0 lg:block xl:max-w-sm">
+            <div className="sticky top-32 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+              <FiltersContent
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                filters={filters}
+                setFilters={setFilters}
+                useMockData={useMockData}
+                setUseMockData={setUseMockData}
+                onReset={handleResetFilters}
+                t={t}
+              />
+            </div>
+          </aside>
 
           {/* Results */}
           <div className="flex-1">
-            <div className="mb-6">
-              <p className="text-gray-700">
-                <span className="font-semibold text-2xl">
+            <div className="mb-6 flex items-center justify-between rounded-xl border border-gray-200 bg-white px-5 py-4 text-sm text-gray-700 shadow-sm">
+              <span>
+                <span className="text-2xl font-semibold text-gray-900">
                   {filteredDoctors.length}
                 </span>{" "}
-                Dokter ditemukan
-              </p>
+                {t("doctor_page.result_suffix", {
+                  defaultValue: "Dokter ditemukan",
+                })}
+              </span>
+              <button
+                type="button"
+                onClick={handleResetFilters}
+                className="hidden items-center gap-1 text-xs font-semibold text-red-600 transition hover:text-red-700 sm:inline-flex"
+              >
+                <X className="h-3.5 w-3.5" />
+                {t("doctor_page.reset")}
+              </button>
             </div>
 
             {loading ? (
-              <div className="text-center py-12">
-                <div className="inline-block w-8 h-8 border-4 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+              <div className="flex justify-center py-12">
+                <div className="h-10 w-10 animate-spin rounded-full border-4 border-red-600 border-t-transparent" />
               </div>
             ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {filteredDoctors.map((doctor) => (
                   <DoctorCard key={doctor.id} doctor={doctor} />
                 ))}

@@ -37,6 +37,7 @@ const actions = [
 export default function QuickActionsSection() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [footerVisible, setFooterVisible] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
 
   useEffect(() => {
     const footer = document.getElementById("site-footer");
@@ -51,6 +52,17 @@ export default function QuickActionsSection() {
 
     observer.observe(footer);
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mediaQuery = window.matchMedia("(max-width: 640px)");
+    const handleMatch = (event: MediaQueryListEvent | MediaQueryList) => {
+      setIsMobileView(event.matches);
+    };
+    handleMatch(mediaQuery);
+    mediaQuery.addEventListener("change", handleMatch);
+    return () => mediaQuery.removeEventListener("change", handleMatch);
   }, []);
   const cardVariants = {
     hidden: { opacity: 0, y: 36, scale: 0.98 },
@@ -69,10 +81,18 @@ export default function QuickActionsSection() {
     },
   };
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-6 z-40 flex justify-center px-6 sm:px-8">
+    <div
+      className={cn(
+        "pointer-events-none fixed inset-x-0 z-40 flex justify-center sm:bottom-6 sm:px-6 lg:px-8",
+        isMobileView ? "bottom-0" : "bottom-4"
+      )}
+    >
       <motion.div
         className={cn(
-          "pointer-events-auto rounded-[2.5rem] border border-blue-100 bg-white/95 px-6 py-3 shadow-xl shadow-blue-100/50 backdrop-blur-sm transition-all duration-300 ease-out",
+          "pointer-events-auto w-full transition-all duration-300 ease-out",
+          isMobileView
+            ? "max-w-none rounded-none border-t border-blue-100 bg-white/98 px-4 py-2 shadow-[0_-8px_24px_-12px_rgba(37,99,235,0.35)]"
+            : "max-w-lg rounded-[2.5rem] border border-blue-100 bg-white/95 px-2 py-2 shadow-xl shadow-blue-100/50 backdrop-blur-sm sm:max-w-3xl sm:px-4",
           footerVisible
             ? "translate-y-24 opacity-0 pointer-events-none"
             : "translate-y-0 opacity-100"
@@ -83,9 +103,15 @@ export default function QuickActionsSection() {
         transition={{ type: "spring", stiffness: 200, damping: 24 }}
         layout
       >
-        <div className="grid grid-cols-2 items-center justify-around gap-4 sm:grid-cols-4">
+        <div
+          className={cn(
+            "items-center gap-3 sm:grid-cols-4 sm:gap-4",
+            isMobileView
+              ? "grid grid-cols-4"
+              : "grid grid-cols-2 justify-around sm:grid-cols-4"
+          )}
+        >
           {actions.map((action, i) => {
-            const isDimmed = activeIndex !== null && activeIndex !== i;
             return (
               <motion.div
                 key={action.label}
@@ -98,14 +124,13 @@ export default function QuickActionsSection() {
                 onHoverStart={() => setActiveIndex(i)}
                 onHoverEnd={() => setActiveIndex(null)}
                 onFocus={() => setActiveIndex(i)}
-                onBlur={() => setActiveIndex(null)}
               >
                 <Link
                   href={action.href}
                   className={cn(
-                    "flex flex-col items-center gap-3 rounded-2xl border border-transparent px-4 py-3 text-center text-sm font-medium text-slate-600 transition hover:border-blue-100 hover:bg-blue-50 focus-visible:border-blue-200 focus-visible:bg-blue-50 outline-none group",
-                    isDimmed ? "opacity-50 blur-[1px]" : "opacity-100",
-                    footerVisible && "pointer-events-none"
+                    "flex flex-col items-center gap-2 rounded-2xl border border-transparent p-2 text-center text-sm font-medium text-slate-600 transition hover:border-blue-100 hover:bg-blue-50 focus-visible:border-blue-200 focus-visible:bg-blue-50 outline-none group",
+                    footerVisible && "pointer-events-none",
+                    isMobileView && "gap-1 text-xs"
                   )}
                   tabIndex={0}
                 >
