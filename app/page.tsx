@@ -11,6 +11,10 @@ import SearchSection from "@/components/SearchSection";
 import SuperiorCoESection from "@/components/SuperiorCoE";
 import DedicationStatsSection from "@/components/DedicationStatsSection";
 import VisitHospitalSection from "@/components/VisitHospitalSection";
+import PromotionSection from "@/components/PromotionSection";
+import StorySection from "@/components/StorySection";
+import StageSection from "@/components/StageSection";
+import NewsUpdateSection from "@/components/NewsUpdateSection";
 import FaqSection from "@/components/FaqSection";
 
 export default function HomePage() {
@@ -21,20 +25,24 @@ export default function HomePage() {
       <SuperiorCoESection />
       <DedicationStatsSection />
       <VisitHospitalSection />
+      <PromotionSection />
+      <StorySection />
+      <StageSection />
+      <NewsUpdateSection />
 
       <ArticleSection />
 
-      <PortfolioSection />
+      {/* <PortfolioSection /> */}
 
-      <BlogSection />
+      {/* <BlogSection /> */}
 
-      <FeaturesSection />
+      {/* <FeaturesSection /> */}
 
-      <TestimonialSection />
+      {/* <TestimonialSection /> */}
 
       <FaqSection />
 
-      <LogoPartnerSection />
+      {/* <LogoPartnerSection /> */}
     </div>
   );
 }

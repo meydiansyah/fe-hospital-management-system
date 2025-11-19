@@ -2,35 +2,49 @@
 
 import Link from "next/link";
 import { MapPin } from "lucide-react";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/store";
-import { transformHospital } from "@/lib/dataTransformers";
+// TEMPORARY: Menggunakan dummy data untuk testing
+import { hospitalDetails } from "./[slug]/page";
+// import { useSelector } from "react-redux";
+// import type { RootState } from "@/store";
+// import { transformHospital } from "@/lib/dataTransformers";
+
+// TEMPORARY: Transform function untuk dummy data
+function transformDummyHospital(hospital: (typeof hospitalDetails)[0]) {
+  return {
+    id: hospital.slug,
+    name: hospital.name,
+    slug: hospital.slug,
+    location: hospital.location,
+    distance: "12 KM", // Placeholder
+    direction: `https://maps.google.com/?q=${encodeURIComponent(hospital.location)}`,
+    profile: `/hospital/${hospital.slug}`,
+  };
+}
 
 export default function HospitalPage() {
-  const { hospitals, hospitalsLoading } = useSelector(
-    (state: RootState) => state.masterData
-  );
+  // TEMPORARY: Menggunakan dummy data
+  const transformedHospitals = hospitalDetails.map(transformDummyHospital);
 
-  if (hospitalsLoading) {
-    return (
-      <section className="bg-white pt-32 pb-12">
-        <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <p className="text-slate-600">Memuat data rumah sakit...</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  const transformedHospitals = hospitals
-    .filter((h) => h.is_active)
-    .map((hospital) => {
-      const transformed = transformHospital(hospital);
-      // Mock distance calculation (can be enhanced with user location)
-      const distance = "12 KM"; // Placeholder
-      return { ...transformed, distance };
-    });
+  // ORIGINAL CODE (commented for easy restore):
+  // const { hospitals, hospitalsLoading } = useSelector((state: RootState) => state.masterData);
+  // if (hospitalsLoading) {
+  //   return (
+  //     <section className="bg-white pt-32 pb-12">
+  //       <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 sm:px-6 lg:px-8">
+  //         <div className="text-center">
+  //           <p className="text-slate-600">Memuat data rumah sakit...</p>
+  //         </div>
+  //       </div>
+  //     </section>
+  //   );
+  // }
+  // const transformedHospitals = hospitals
+  //   .filter((h) => h.is_active)
+  //   .map((hospital) => {
+  //     const transformed = transformHospital(hospital);
+  //     const distance = "12 KM";
+  //     return { ...transformed, distance };
+  //   });
   return (
     <section className="bg-white pt-32 pb-12">
       <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 sm:px-6 lg:px-8">
@@ -43,9 +57,8 @@ export default function HospitalPage() {
               Rumah Sakit Sentra Medika
             </h2>
             <p className="text-sm text-slate-500 sm:max-w-lg">
-              Temukan rumah sakit Sentra Medika terdekat dan rencanakan
-              kunjungan Anda dengan mudah melalui peta dan profil layanan
-              lengkap.
+              Temukan rumah sakit Sentra Medika terdekat dan rencanakan kunjungan Anda dengan mudah
+              melalui peta dan profil layanan lengkap.
             </p>
           </div>
           <span className="inline-flex items-center gap-2 self-start rounded-full bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700">
@@ -66,9 +79,7 @@ export default function HospitalPage() {
                   {hospital.distance}
                 </span>
                 <div>
-                  <h3 className="text-lg font-semibold text-blue-900">
-                    {hospital.name}
-                  </h3>
+                  <h3 className="text-lg font-semibold text-blue-900">{hospital.name}</h3>
                   <p className="text-sm text-slate-500">{hospital.location}</p>
                 </div>
               </div>

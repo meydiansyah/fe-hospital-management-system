@@ -14,12 +14,16 @@ import {
 import HospitalFacilitiesSection, {
   type HospitalFacility,
 } from "@/components/HospitalFacilitiesSection";
+import DoctorTeamSection from "@/components/DoctorTeamSection";
+import FacilitiesCarouselSection from "@/components/FacilitiesCarouselSection";
+import PromotionSection from "@/components/PromotionSection";
+import HospitalContactSection from "@/components/HospitalContactSection";
 
 type Specialty = {
   title: string;
   description: string;
   href: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: string; // Changed to string for image path
 };
 
 type HospitalDetail = {
@@ -34,7 +38,7 @@ type HospitalDetail = {
   facilities: HospitalFacility[];
 };
 
-const hospitalDetails: HospitalDetail[] = [
+export const hospitalDetails: HospitalDetail[] = [
   {
     slug: "harapan-bunda",
     name: "Harapan Bunda Hospital",
@@ -49,23 +53,23 @@ const hospitalDetails: HospitalDetail[] = [
       {
         title: "Onkologi & Kemoterapi",
         description:
-          "Penanganan kanker terpadu dengan teknologi radioterapi dan PAS (Personalized Adaptive Strategy).",
+          "Layanan Onkologi & Kemoterapi SMHG menyediakan layanan khusus pengobatan kanker secara terpadu, didukung dengan teknologi radioterapi terkini serta strategi perawatan yang dipersonalisasi untuk setiap pasien.",
         href: "/centers/oncology",
-        icon: Microscope,
+        icon: "/icon/hospital-facility/onkologi.svg",
       },
       {
         title: "Medical Check Up (MCU)",
         description:
-          "Paket skrining komprehensif untuk korporasi dan individu dengan hasil digital realtime.",
+          "MEDICAL CHECK UP (MCU) Sentra Medika Hospital Group (SMHG) menyediakan rangkaian layanan pemeriksaan kesehatan menyeluruh untuk deteksi dini berbagai kondisi medis, tersedia bagi individu maupun korporasi dengan hasil yang cepat.",
         href: "/centers/mcu",
-        icon: Activity,
+        icon: "/icon/hospital-facility/mcu.svg",
       },
       {
         title: "Cardiovascular & Brain Center",
         description:
-          "Cath Lab terintegrasi untuk tindakan jantung dan stroke dengan tim intervensi 24 jam.",
+          "Cardiovascular & Brain Center SMHG merupakan pusat layanan terpadu jantung dan otak, dilengkapi dengan Cath Lab dan tim medis berpengalaman yang siap memberikan tindakan intervensi 24 jam guna penanganan optimal pasien stroke dan kardiovaskular.",
         href: "/centers/heart-brain",
-        icon: HeartPulse,
+        icon: "/icon/hospital-facility/brain-center.svg",
       },
     ],
     facilities: [
@@ -109,23 +113,23 @@ const hospitalDetails: HospitalDetail[] = [
       {
         title: "PCNL",
         description:
-          "Prosedur minimal invasif pengangkatan batu ginjal dengan pemulihan cepat.",
+          "PCNL (Percutaneous nephrolitotomy) adalah prosedur pengangkatan batu ginjal yang minimal invasif melalui sayatan kecil. Metode ini memungkinkan pemulihan lebih cepat dengan risiko komplikasi yang lebih rendah dibandingkan operasi terbuka.",
         href: "/centers/pcnl",
-        icon: Orbit,
+        icon: "/icon/hospital-facility/pcnl.svg",
       },
       {
         title: "Medical Rehabilitation Center",
         description:
-          "Rehabilitasi pasca stroke, cedera olahraga, dan terapi okupasi dengan fasilitas lengkap.",
+          "Fasilitas perawatan intensif untuk pasien yang mengalami gangguan kesehatan, baik pasca-stroke, cedera olahraga, maupun kondisi lain yang memerlukan terapi fisik, okupasi, dan program rehabilitasi menyeluruh dengan pendekatan individual.",
         href: "/centers/rehab",
-        icon: Stethoscope,
+        icon: "/icon/hospital-facility/rehabilitation.svg",
       },
       {
         title: "Brain Center",
         description:
-          "Penanganan stroke dan bedah saraf dengan neuro ICU dan tim multidisiplin.",
+          "Brain Center kami menghadirkan layanan terpadu untuk penanganan stroke, bedah saraf, serta kondisi neurologis lainnya, didukung neuro ICU dan tim multidisiplin berpengalaman yang siap memberikan perawatan optimal bagi setiap pasien.",
         href: "/centers/brain",
-        icon: Brain,
+        icon: "/icon/hospital-facility/brain-center.svg",
       },
     ],
     facilities: [
@@ -139,16 +143,14 @@ const hospitalDetails: HospitalDetail[] = [
       },
       {
         title: "Klinik Ibu & Anak",
-        description:
-          "Layanan persalinan, laktasi, dan tumbuh kembang anak terpadu.",
+        description: "Layanan persalinan, laktasi, dan tumbuh kembang anak terpadu.",
         image:
           "https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?w=1200&q=80&auto=format&fit=crop",
         href: "/facilities/maternity",
       },
       {
         title: "Hemodialisa",
-        description:
-          "Unit hemodialisa dengan mesin canggih dan fasilitas lounge untuk keluarga.",
+        description: "Unit hemodialisa dengan mesin canggih dan fasilitas lounge untuk keluarga.",
         image:
           "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1200&q=80&auto=format&fit=crop",
         href: "/facilities/hemodialysis",
@@ -169,38 +171,36 @@ const hospitalDetails: HospitalDetail[] = [
       {
         title: "Trauma Center",
         description:
-          "Penanganan cedera kerja dan kecelakaan dengan dokter ortopedi dan bedah plastik.",
+          "Trauma Center merupakan fasilitas guna menangani pasien trauma/kecelakaan kerja yang memerlukan perawatan darurat, didukung oleh dokter spesialis kedokteran fisik dan rehabilitasi, ortopedi, serta bedah plastik untuk pemulihan komprehensif.",
         href: "/centers/trauma",
-        icon: Activity,
+        icon: "/icon/hospital-facility/trauma.svg",
       },
       {
         title: "Orthopedic Center",
         description:
-          "Fasilitas penanganan tulang dan sendi, termasuk arthroscopy dan joint replacement.",
+          "Orthopedi Center SMHG menyediakan layanan penanganan masalah tulang, sendi, dan sistem muskuloskeletal lainnya, termasuk prosedur arthroscopy serta operasi penggantian sendi (joint replacement) dengan teknologi modern.",
         href: "/centers/orthopedic",
-        icon: Stethoscope,
+        icon: "/icon/hospital-facility/orthopedi.svg",
       },
       {
         title: "Hemodialisa",
         description:
-          "Pelayanan cuci darah dengan jadwal fleksibel khusus pekerja industri.",
+          "Hemodialisa (Cuci Darah) merupakan salah satu jenis terapi pasien gagal ginjal. Hemodialisa bekerja dengan cara mengeluarkan produk sisa yang mengandung racun, kelebihan air, dan zat-zat yang tidak diperlukan tubuh, dengan jadwal fleksibel khusus untuk pekerja industri.",
         href: "/centers/hemodialysis",
-        icon: HeartPulse,
+        icon: "/icon/hospital-facility/hemodialisa.svg",
       },
     ],
     facilities: [
       {
         title: "Rawat Jalan Eksekutif",
-        description:
-          "Klinik eksekutif dengan layanan one stop service dan lounge korporasi.",
+        description: "Klinik eksekutif dengan layanan one stop service dan lounge korporasi.",
         image:
           "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1200&q=80&auto=format&fit=crop",
         href: "/facilities/outpatient",
       },
       {
         title: "Industrial Clinic",
-        description:
-          "Tim dokter perusahaan dan ambulance siaga untuk kebutuhan korporasi.",
+        description: "Tim dokter perusahaan dan ambulance siaga untuk kebutuhan korporasi.",
         image:
           "https://images.unsplash.com/photo-1504439468489-c8920d796a29?w=1200&q=80&auto=format&fit=crop",
         href: "/facilities/industrial-clinic",
@@ -229,46 +229,43 @@ const hospitalDetails: HospitalDetail[] = [
       {
         title: "Layanan Ibu & Anak",
         description:
-          "Pendampingan persalinan, laktasi, NICU, serta klinik tumbuh kembang anak.",
+          "Layanan Ibu & Anak menyediakan pendampingan penuh mulai dari kehamilan, persalinan, konsultasi laktasi, perawatan NICU, hingga klinik tumbuh kembang anak untuk memastikan kesehatan ibu dan buah hati.",
         href: "/centers/maternity",
-        icon: Stethoscope,
+        icon: "/icon/hospital-facility/rehabilitation.svg",
       },
       {
         title: "Endoscopy Center",
         description:
-          "Diagnostik dan terapi endoskopi gastrointestinal dengan dokter spesialis berpengalaman.",
+          "Endoscopy Center menyediakan layanan diagnostik dan terapi endoskopi gastrointestinal dengan dokter spesialis berpengalaman menggunakan peralatan modern untuk penanganan yang akurat dan aman.",
         href: "/centers/endoscopy",
-        icon: Microscope,
+        icon: "/icon/hospital-facility/mcu.svg",
       },
       {
         title: "Spine Center",
         description:
-          "Layanan nyeri punggung, skoliosis, dan bedah tulang belakang minimal invasif.",
+          "Spine Center menghadirkan solusi komprehensif untuk masalah nyeri punggung, skoliosis, dan kondisi tulang belakang lainnya, termasuk prosedur bedah minimal invasif untuk pemulihan lebih cepat.",
         href: "/centers/spine",
-        icon: Brain,
+        icon: "/icon/hospital-facility/brain-center.svg",
       },
     ],
     facilities: [
       {
         title: "Kamar Bersalin",
-        description:
-          "Ruang persalinan nyaman dengan fasilitas rooming-in dan dukungan doula.",
+        description: "Ruang persalinan nyaman dengan fasilitas rooming-in dan dukungan doula.",
         image:
           "https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?w=1200&q=80&auto=format&fit=crop",
         href: "/facilities/maternity",
       },
       {
         title: "Endoscopy Suite",
-        description:
-          "Fasilitas endoskopi modern dengan sedasi aman dan pemulihan cepat.",
+        description: "Fasilitas endoskopi modern dengan sedasi aman dan pemulihan cepat.",
         image:
           "https://images.unsplash.com/photo-1584467735815-f778f274e4eb?w=1200&q=80&auto=format&fit=crop",
         href: "/facilities/endoscopy",
       },
       {
         title: "Fisioterapi",
-        description:
-          "Terapi muskuloskeletal dan rehabilitasi pasca operasi tulang belakang.",
+        description: "Terapi muskuloskeletal dan rehabilitasi pasca operasi tulang belakang.",
         image:
           "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=1200&q=80&auto=format&fit=crop",
         href: "/facilities/rehab",
@@ -289,46 +286,43 @@ const hospitalDetails: HospitalDetail[] = [
       {
         title: "MCU Korporasi",
         description:
-          "Paket medical check up karyawan dengan penjemputan sample on-site.",
+          "MCU Korporasi menawarkan paket medical check up menyeluruh untuk karyawan perusahaan dengan layanan penjemputan sampel on-site, hasil cepat, dan laporan kesehatan yang komprehensif.",
         href: "/centers/mcu",
-        icon: Activity,
+        icon: "/icon/hospital-facility/mcu.svg",
       },
       {
         title: "Rehabilitasi Medik",
         description:
-          "Rehabilitasi pasca cedera dan pasca operasi dengan program individual.",
+          "Rehabilitasi Medik menyediakan program terapi individual untuk pemulihan pasca cedera dan pasca operasi, dirancang khusus sesuai kebutuhan setiap pasien untuk hasil maksimal.",
         href: "/centers/rehab",
-        icon: Stethoscope,
+        icon: "/icon/hospital-facility/rehabilitation.svg",
       },
       {
         title: "Trauma Center",
         description:
-          "Penanganan trauma dan kecelakaan lalu lintas didukung imaging 24 jam.",
+          "Trauma Center siap menangani kasus trauma dan kecelakaan lalu lintas dengan fasilitas imaging 24 jam serta tim medis berpengalaman untuk penanganan cepat dan tepat.",
         href: "/centers/trauma",
-        icon: HeartPulse,
+        icon: "/icon/hospital-facility/trauma.svg",
       },
     ],
     facilities: [
       {
         title: "MCU Lounge",
-        description:
-          "Area khusus pasien MCU dengan layanan cepat dan hasil digital.",
+        description: "Area khusus pasien MCU dengan layanan cepat dan hasil digital.",
         image:
           "https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?w=1200&q=80&auto=format&fit=crop",
         href: "/facilities/mcu",
       },
       {
         title: "Rehab Center",
-        description:
-          "Terapi okupasi, fisioterapi, dan hidroterapi untuk pemulihan optimal.",
+        description: "Terapi okupasi, fisioterapi, dan hidroterapi untuk pemulihan optimal.",
         image:
           "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=1200&q=80&auto=format&fit=crop",
         href: "/facilities/rehab",
       },
       {
         title: "Laboratorium 24 Jam",
-        description:
-          "Pengolahan sampel cepat dengan integrasi ke rekam medis elektronik.",
+        description: "Pengolahan sampel cepat dengan integrasi ke rekam medis elektronik.",
         image:
           "https://images.unsplash.com/photo-1584982751601-97dcc096659c?w=1200&q=80&auto=format&fit=crop",
         href: "/facilities/lab",
@@ -349,38 +343,36 @@ const hospitalDetails: HospitalDetail[] = [
       {
         title: "Eye Center",
         description:
-          "Layanan katarak, lasik, dan retina dengan peralatan diagnostik berteknologi tinggi.",
+          "Eye Center menyediakan layanan lengkap untuk kesehatan mata, termasuk operasi katarak, lasik, dan perawatan retina dengan peralatan diagnostik berteknologi tinggi dan tim dokter spesialis berpengalaman.",
         href: "/centers/eye",
-        icon: Microscope,
+        icon: "/icon/hospital-facility/mcu.svg",
       },
       {
         title: "Stroke Unit",
         description:
-          "Tindak cepat stroke dengan telemedicine dan kolaborasi neurologis nasional.",
+          "Stroke Unit memberikan tindakan cepat dan tepat untuk pasien stroke dengan dukungan telemedicine dan kolaborasi tim neurologis nasional, memastikan penanganan optimal dalam golden period.",
         href: "/centers/brain",
-        icon: Brain,
+        icon: "/icon/hospital-facility/brain-center.svg",
       },
       {
         title: "Dialysis Care",
         description:
-          "Unit hemodialisa nyaman dengan jadwal berjenjang untuk pasien wilayah sekitar.",
+          "Dialysis Care menyediakan unit hemodialisa yang nyaman dengan jadwal berjenjang yang fleksibel, dirancang khusus untuk memenuhi kebutuhan pasien di wilayah sekitar.",
         href: "/centers/hemodialysis",
-        icon: HeartPulse,
+        icon: "/icon/hospital-facility/hemodialisa.svg",
       },
     ],
     facilities: [
       {
         title: "Operating Theatre",
-        description:
-          "Ruang operasi modern untuk bedah umum, ortopedi, dan endoscopy.",
+        description: "Ruang operasi modern untuk bedah umum, ortopedi, dan endoscopy.",
         image:
           "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1200&q=80&auto=format&fit=crop",
         href: "/facilities/surgery",
       },
       {
         title: "Dialysis Suite",
-        description:
-          "Unit hemodialisa dengan pemandangan alam dan fasilitas relaksasi pasien.",
+        description: "Unit hemodialisa dengan pemandangan alam dan fasilitas relaksasi pasien.",
         image:
           "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=1200&q=80&auto=format&fit=crop",
         href: "/facilities/hemodialysis",
@@ -412,16 +404,10 @@ function isPromise<T>(value: MaybePromise<T>): value is Promise<T> {
   );
 }
 
-export default async function HospitalDetailPage({
-  params,
-}: HospitalDetailPageProps) {
-  const resolvedParams = isPromise(params)
-    ? await params
-    : (params as { slug: string });
+export default async function HospitalDetailPage({ params }: HospitalDetailPageProps) {
+  const resolvedParams = isPromise(params) ? await params : (params as { slug: string });
 
-  const rawSlug = decodeURIComponent(
-    (resolvedParams?.slug ?? "").toLowerCase()
-  );
+  const rawSlug = decodeURIComponent((resolvedParams?.slug ?? "").toLowerCase());
   const normalizedSlug = rawSlug.replace(/-?hospital$/, "");
   const hospital = hospitalDetails.find(
     (item) => item.slug === rawSlug || item.slug === normalizedSlug
@@ -456,28 +442,39 @@ export default async function HospitalDetailPage({
             Perawatan Terbaik Dengan Standar Internasional
           </h2>
         </header>
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 justify-items-center">
           {hospital.specialties.map((center) => (
             <article
               key={center.title}
-              className="flex h-full flex-col justify-between rounded-3xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-100/40 transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl"
+              className="flex h-[350px] w-full max-w-[280px] flex-col rounded-[20px] border-2 border-slate-200 bg-white p-5 transition hover:shadow-lg"
             >
-              <div className="flex items-center gap-4">
-                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-blue-600">
-                  <center.icon className="h-6 w-6" />
-                </span>
-                <h3 className="text-lg font-semibold text-blue-900">
-                  {center.title}
-                </h3>
+              {/* Icon */}
+              <div className="mb-4 flex h-16 w-16 shrink-0 items-center justify-center">
+                <Image
+                  src={center.icon}
+                  alt={center.title}
+                  width={64}
+                  height={64}
+                  className="h-full w-full object-contain"
+                />
               </div>
-              <p className="mt-4 flex-1 text-sm leading-relaxed text-slate-600">
+
+              {/* Title */}
+              <h3 className="mb-2 line-clamp-2 text-lg font-semibold leading-snug text-slate-900">
+                {center.title}
+              </h3>
+
+              {/* Description */}
+              <p className="mb-4 line-clamp-4 flex-1 text-sm leading-relaxed text-slate-600">
                 {center.description}
               </p>
+
+              {/* Button */}
               <Link
                 href={center.href}
-                className="mt-6 text-sm font-semibold text-blue-600 transition hover:text-blue-700"
+                className="inline-flex h-8 w-[169px] items-center justify-center gap-2.5 rounded-lg border border-[#262B7E] text-sm font-semibold text-[#262B7E] transition hover:bg-[#262B7E] hover:text-white"
               >
-                Lihat Selengkapnya &rarr;
+                Lihat Selengkapnya
               </Link>
             </article>
           ))}
@@ -485,6 +482,14 @@ export default async function HospitalDetailPage({
       </section>
 
       <HospitalFacilitiesSection facilities={hospital.facilities} />
+
+      <DoctorTeamSection />
+
+      <FacilitiesCarouselSection />
+
+      <PromotionSection />
+
+      <HospitalContactSection />
     </div>
   );
 }
