@@ -119,7 +119,7 @@ const useDoctorStore = () => {
   const { doctors: apiDoctors, doctorsLoading } = useSelector(
     (state: RootState) => state.masterData
   );
-  
+
   const transformedDoctors: Doctor[] = apiDoctors
     .filter((d) => d.status !== "inactive")
     .map((doctor) => {
