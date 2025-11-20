@@ -16,7 +16,7 @@ import type {
 } from "@/types/api";
 
 // Helper to get image URL from various formats
-export function getImageUrl(
+function getImageUrl(
   images: Image[] | string[] | undefined,
   fallback?: string
 ): string {
@@ -32,7 +32,7 @@ export function getImageUrl(
 }
 
 // Helper to get description (can be string or object with en/id)
-export function getDescription(
+function getDescription(
   description: string | { en: string; id: string } | undefined,
   lang: string = "id"
 ): string {
@@ -42,7 +42,7 @@ export function getDescription(
 }
 
 // Transform Hospital to component format
-export function transformHospital(hospital: Hospital) {
+function transformHospital(hospital: Hospital) {
   const description = getDescription(hospital.description);
   return {
     id: hospital.id,
@@ -61,7 +61,7 @@ export function transformHospital(hospital: Hospital) {
 }
 
 // Transform Doctor to component format
-export function transformDoctor(doctor: Doctor) {
+function transformDoctor(doctor: Doctor) {
   const primarySpecialization =
     doctor.specializations && doctor.specializations.length > 0
       ? doctor.specializations[0]
@@ -94,7 +94,7 @@ export function transformDoctor(doctor: Doctor) {
 }
 
 // Transform Article to component format
-export function transformArticle(article: Article) {
+function transformArticle(article: Article) {
   return {
     id: article.id,
     cover: getImageUrl(article.images),
@@ -116,12 +116,12 @@ export function transformArticle(article: Article) {
 }
 
 // Transform News to component format (similar to Article)
-export function transformNews(news: News) {
+function transformNews(news: News) {
   return transformArticle(news as unknown as Article);
 }
 
 // Transform CenterOfExcellence to component format
-export function transformCenterOfExcellence(coe: CenterOfExcellence) {
+function transformCenterOfExcellence(coe: CenterOfExcellence) {
   return {
     id: coe.id,
     name: coe.name,
@@ -129,15 +129,21 @@ export function transformCenterOfExcellence(coe: CenterOfExcellence) {
     title: coe.title,
     description: coe.description,
     image: getImageUrl(coe.images),
-    logo: getImageUrl(coe.images, "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=200&q=80&auto=format&fit=crop"),
-    pattern: getImageUrl(coe.images, "https://images.unsplash.com/photo-1618005198919-d3d4b5a92eee?w=400&q=80&auto=format&fit=crop"),
+    logo: getImageUrl(
+      coe.images,
+      "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=200&q=80&auto=format&fit=crop"
+    ),
+    pattern: getImageUrl(
+      coe.images,
+      "https://images.unsplash.com/photo-1618005198919-d3d4b5a92eee?w=400&q=80&auto=format&fit=crop"
+    ),
     href: `/center-of-excellence/${coe.slug}`,
     isActive: coe.is_active,
   };
 }
 
 // Transform MedicalTourism to component format
-export function transformMedicalTourism(tourism: MedicalTourism) {
+function transformMedicalTourism(tourism: MedicalTourism) {
   return {
     id: tourism.id,
     name: tourism.name,
@@ -151,7 +157,7 @@ export function transformMedicalTourism(tourism: MedicalTourism) {
 }
 
 // Transform Partner to component format
-export function transformPartner(partner: Partner) {
+function transformPartner(partner: Partner) {
   return {
     id: partner.id,
     name: partner.name,
@@ -159,24 +165,28 @@ export function transformPartner(partner: Partner) {
     title: partner.title,
     description: partner.description,
     image: getImageUrl(partner.images),
-    logo: getImageUrl(partner.images, "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=200&q=80&auto=format&fit=crop"),
+    logo: getImageUrl(
+      partner.images,
+      "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=200&q=80&auto=format&fit=crop"
+    ),
     href: `/partner/${partner.slug}`,
     isActive: partner.is_active,
   };
 }
 
 // Transform Milestone to component format
-export function transformMilestone(milestone: Milestone) {
+function transformMilestone(milestone: Milestone) {
   return {
     year: milestone.year.toString(),
     title: milestone.title,
     description: milestone.description,
-    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80", // Default image, can be enhanced if API provides images
+    image:
+      "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80", // Default image, can be enhanced if API provides images
   };
 }
 
 // Calculate distance (mock for now, can be enhanced with geolocation)
-export function calculateDistance(
+function calculateDistance(
   lat1: number,
   lon1: number,
   lat2: number,
