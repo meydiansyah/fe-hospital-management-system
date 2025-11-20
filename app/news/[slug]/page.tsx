@@ -7,7 +7,7 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { RootState } from "@/store";
-import { transformNews, getImageUrl, getDescription } from "@/lib/dataTransformers";
+import { transformNews, getImageUrl } from "@/lib/dataTransformers";
 import { Share2, Link as LinkIcon } from "lucide-react";
 import { notFound } from "next/navigation";
 
@@ -34,7 +34,8 @@ const dummyPosts: BlogPost[] = [
     published_at: "9 Mei 2025",
     author: {
       name: "dr. Ray Hendry, Sp.OT",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
+      avatar:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
     },
     title:
       "Peringati Hari Thalasemia Sedunia, Sentra Medika Hospital Cisalak Gelar Edukasi dan Kegiatan Interaktif Bersama Pasien",
@@ -66,7 +67,8 @@ const dummyPosts: BlogPost[] = [
     published_at: "9 Mei 2025",
     author: {
       name: "Sentra Medika",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
+      avatar:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
     },
     title: "Our New Doctor - dr. Putra Habibie Adnantama Lubis, Sp. JP",
     summary:
@@ -96,7 +98,8 @@ const dummyPosts: BlogPost[] = [
     published_at: "9 Mei 2025",
     author: {
       name: "Sentra Medika",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
+      avatar:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
     },
     title: "Peresmian Layanan MRI 1,5 Tesla di RS Harapan Bunda",
     summary:
@@ -125,7 +128,8 @@ const dummyPosts: BlogPost[] = [
     published_at: "9 Mei 2025",
     author: {
       name: "Sentra Medika",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
+      avatar:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
     },
     title: "Family Gathering PERSADIA Unit RS Harapan Bunda",
     summary:
@@ -154,24 +158,24 @@ export default function NewsDetailPage() {
     ? params.slug
     : "";
 
-  const { news, newsLoading } = useSelector((state: RootState) => state.masterData);
+  const { news } = useSelector((state: RootState) => state.masterData);
 
   // Use API data if available, otherwise fallback to dummy data
-  const newsItem = useMemo(() => {
-    if (news && news.length > 0) {
-      const found = news.find((n) => n.slug === slugParam);
-      return found ? transformNews(found) : null;
-    }
-    // Fallback to dummy data
-    return dummyPosts.find((post) => post.slug === slugParam) || null;
-  }, [news, slugParam]);
-
   const originalNews = useMemo(() => {
     if (news && news.length > 0) {
       return news.find((n) => n.slug === slugParam);
     }
     return dummyPosts.find((post) => post.slug === slugParam);
   }, [news, slugParam]);
+
+  const newsItem = useMemo(() => {
+    if (originalNews && "images" in originalNews) {
+      // API data - transform it
+      return transformNews(originalNews);
+    }
+    // Dummy data - return as is
+    return originalNews as BlogPost | null;
+  }, [originalNews]);
 
   if (!newsItem) {
     notFound();
@@ -189,7 +193,10 @@ export default function NewsDetailPage() {
   const relatedNews = useMemo(() => {
     if (news && news.length > 0) {
       return news
-        .filter((n) => n.slug !== slugParam && n.status === "published" && n.published_at)
+        .filter(
+          (n) =>
+            n.slug !== slugParam && n.status === "published" && n.published_at
+        )
         .slice(0, 3)
         .map(transformNews);
     }
@@ -197,25 +204,54 @@ export default function NewsDetailPage() {
     return dummyPosts.filter((post) => post.slug !== slugParam).slice(0, 3);
   }, [news, slugParam]);
 
-  const formattedDate = originalNews && "published_at" in originalNews && originalNews.published_at
-    ? new Date(originalNews.published_at).toLocaleDateString("id-ID", {
+  // Format date - handle both API and dummy data
+  const formattedDate = useMemo(() => {
+    if (
+      originalNews &&
+      "published_at" in originalNews &&
+      originalNews.published_at
+    ) {
+      // API data with Date object
+      return new Date(originalNews.published_at).toLocaleDateString("id-ID", {
         year: "numeric",
         month: "long",
         day: "numeric",
-      })
-    : newsItem.published_at;
+      });
+    }
+    // Dummy data already has formatted date string
+    return newsItem.published_at;
+  }, [originalNews, newsItem.published_at]);
 
-  const authorName =
-    originalNews && "author" in originalNews
-      ? originalNews.author || "Sentra Medika"
-      : newsItem.author.name;
+  // Get author name - handle both API and dummy data
+  // Always return string, never object
+  const authorName = useMemo(() => {
+    if (originalNews && "author" in originalNews) {
+      // API data - author might be string or object
+      const author = originalNews.author;
+      if (typeof author === "string") {
+        return author;
+      }
+      if (author && typeof author === "object" && "name" in author) {
+        return author.name;
+      }
+      return "Sentra Medika";
+    }
+    // Dummy data - author is always object with name property
+    return newsItem.author?.name || "Sentra Medika";
+  }, [originalNews, newsItem.author]);
 
-  const content =
-    originalNews && "content" in originalNews
-      ? originalNews.content || newsItem.summary
-      : originalNews && "content" in originalNews
-      ? originalNews.content
-      : newsItem.summary;
+  // Get content - handle both API and dummy data
+  const content = useMemo(() => {
+    if (originalNews && "content" in originalNews) {
+      // API data
+      return originalNews.content || newsItem.summary || "";
+    }
+    // Dummy data - check if newsItem has content property (BlogPost type)
+    if ("content" in newsItem && newsItem.content) {
+      return newsItem.content;
+    }
+    return newsItem.summary || "";
+  }, [originalNews, newsItem]);
 
   return (
     <div className="min-h-screen bg-white pt-20">
@@ -246,12 +282,17 @@ export default function NewsDetailPage() {
                 {formattedDate && <p>{formattedDate}</p>}
                 {authorName && (
                   <div>
-                    <span className="text-slate-600">{t("news.author") || "Narasumber"}:</span>{" "}
-                    <span className="font-medium text-[#262B7E]">{authorName}</span>
+                    <span className="text-slate-600">
+                      {t("news.author") || "Narasumber"}:
+                    </span>{" "}
+                    <span className="font-medium text-[#262B7E]">
+                      {authorName}
+                    </span>
                   </div>
                 )}
                 <p className="text-slate-500">
-                  {t("news.writtenBy") || "Ditulis oleh Tim Medis Sentra Medika Hospital"}
+                  {t("news.writtenBy") ||
+                    "Ditulis oleh Tim Medis Sentra Medika Hospital"}
                 </p>
               </div>
 
