@@ -3,11 +3,9 @@
 import React, { useState } from "react";
 import TopBar from "./TopNavbar";
 import MainNav from "./MainNav";
-import AuthModal from "./AuthModal";
 
 export default function Navbar() {
   const [hideTopBar, setHideTopBar] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
 
   // scroll effect
   React.useEffect(() => {
@@ -22,15 +20,9 @@ export default function Navbar() {
   }, []);
 
   return (
-    <>
-      <nav className="fixed top-0 z-50 w-full">
-        <TopBar hideTopBar={hideTopBar} />
-        <MainNav
-          hideTopBar={hideTopBar}
-          onGetStarted={() => setShowAuthModal(true)}
-        />
-      </nav>
-      <AuthModal open={showAuthModal} onOpenChange={setShowAuthModal} />
-    </>
+    <nav className="fixed top-0 z-50 w-full">
+      <TopBar hideTopBar={hideTopBar} />
+      <MainNav hideTopBar={hideTopBar} />
+    </nav>
   );
 }

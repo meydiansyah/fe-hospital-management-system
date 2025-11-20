@@ -2,116 +2,165 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
-import { transformCenterOfExcellence } from "@/lib/dataTransformers";
+import { ChevronRight } from "lucide-react";
+
+type CenterOfExcellence = {
+  id: string;
+  name: string;
+  slug: string;
+  logo: string;
+  description: string;
+};
+
+// Superior Centers (SWICC & Golden Heart)
+const superiorCenters: CenterOfExcellence[] = [
+  {
+    id: "1",
+    name: "Suherman Widyatomo Integrated Cancer Center (SWICC)",
+    slug: "swicc",
+    logo: "/SWICC.png",
+    description:
+      "Suherman Widyatomo Integrated Cancer Center (SWICC) merupakan layanan unggulan kanker dari Sentra Medika Hospital Group yan...",
+  },
+  {
+    id: "2",
+    name: "Cardiovascular Center",
+    slug: "golden-hearth",
+    logo: "/GoldenHeart.png",
+    description:
+      "Cardiovascular Center merupakan pusat pelayanan terpadu Jantung dan Pembuluh Darah didukung oleh alat Catheterization Lab...",
+  },
+];
+
+// Other Centers
+const otherCenters: CenterOfExcellence[] = [
+  {
+    id: "3",
+    name: "Stroke Center",
+    slug: "stroke-center",
+    logo: "/icon/hospital-facility/brain-center.svg",
+    description: "",
+  },
+  {
+    id: "4",
+    name: "Uronephrology Center",
+    slug: "uronephrology-center",
+    logo: "/icon/hospital-facility/pcnl.svg",
+    description: "",
+  },
+  {
+    id: "5",
+    name: "Orthopedic Center",
+    slug: "orthopedic-center",
+    logo: "/icon/hospital-facility/orthopedi.svg",
+    description: "",
+  },
+  {
+    id: "6",
+    name: "Hepatobilier & Digestive Center",
+    slug: "hepatobilier-digestive-center",
+    logo: "/icon/hospital-facility/mcu.svg",
+    description: "",
+  },
+  {
+    id: "7",
+    name: "Integrated Women & Child",
+    slug: "integrated-women-child",
+    logo: "/icon/hospital-facility/rehabilitation.svg",
+    description: "",
+  },
+  {
+    id: "8",
+    name: "Eye Center",
+    slug: "eye-center",
+    logo: "/icon/hospital-facility/mcu.svg",
+    description: "",
+  },
+];
 
 export default function CenterOfExcellencePage() {
-  const { centerOfExcellences, centerOfExcellencesLoading } = useSelector(
-    (state: RootState) => state.masterData
-  );
-
-  const transformedCenters = useMemo(() => {
-    if (!centerOfExcellences || centerOfExcellences.length === 0) {
-      return [];
-    }
-    return centerOfExcellences
-      .filter((coe) => coe.is_active)
-      .map(transformCenterOfExcellence);
-  }, [centerOfExcellences]);
-
-  if (centerOfExcellencesLoading) {
-    return (
-      <section className="bg-white pt-32 pb-12">
-        <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <p className="text-slate-600">Memuat data center of excellence...</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   return (
-    <section className="bg-white pt-32 pb-12">
-      <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div className="space-y-2">
-            <span className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-red-500">
-              Pusat Keunggulan
-            </span>
-            <h2 className="text-3xl font-semibold text-slate-900 sm:text-4xl">
-              Center of Excellence
-            </h2>
-            <p className="text-sm text-slate-500 sm:max-w-lg">
-              Temukan pusat keunggulan Sentra Medika yang menyediakan layanan
-              medis terdepan dengan teknologi mutakhir dan tim ahli berpengalaman.
-            </p>
-          </div>
+    <div className="min-h-screen bg-slate-50 pt-24 pb-16">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Header Section */}
+        <div className="mb-12 max-w-4xl space-y-6">
+          <h1 className="text-3xl font-bold leading-snug text-[#262B7E] sm:text-4xl">
+            Centers of Excellence: Menghadirkan Standar Tertinggi dalam Pelayanan Kesehatan
+          </h1>
+          <p className="text-base leading-relaxed text-slate-700">
+            Sentra Medika menghadirkan berbagai Centers of Excellence yang menjadi rujukan dalam
+            bidangnya, seperti kardiovaskular, onkologi, ortopedi, dan perinatal. Dengan dukungan
+            fasilitas modern, tim multidisiplin, serta pendekatan berbasis bukti, kami berkomitmen
+            memberikan hasil klinis terbaik dan pengalaman perawatan yang manusiawi.
+          </p>
         </div>
 
-        {transformedCenters.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-slate-600">Tidak ada data center of excellence.</p>
-          </div>
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {transformedCenters.map((center) => (
-              <article
+        {/* Superior Centers of Excellence Section */}
+        <div className="mb-16">
+          <h2 className="mb-8 text-2xl font-bold text-[#262B7E] sm:text-3xl">
+            Superior Centers of Excellence
+          </h2>
+          <div className="grid gap-6 md:grid-cols-2">
+            {superiorCenters.map((center) => (
+              <Link
                 key={center.id}
-                className="group relative overflow-hidden rounded-3xl border border-blue-100 bg-white shadow-lg shadow-blue-100/50 transition hover:-translate-y-1 hover:shadow-xl"
+                href={`/center-of-excellence/${center.slug}`}
+                className="group relative overflow-hidden rounded-3xl border-2 border-slate-200 bg-white p-8 transition hover:border-[#5B7CFF] hover:shadow-xl"
               >
-                <div className="absolute right-0 top-0 h-full w-24 opacity-60">
-                  <Image
-                    src={center.pattern}
-                    alt=""
-                    fill
-                    className="object-cover"
-                    sizes="120px"
-                  />
+                {/* Red Pattern Background */}
+                <div className="absolute -right-20 -top-20 h-64 w-64 opacity-5">
+                  <Image src="/red-pattern.png" alt="" fill className="rotate-12 object-contain" />
                 </div>
-                <div className="relative flex h-full flex-col gap-4 p-6 sm:p-8">
-                  <div className="flex items-center gap-4">
-                    <div className="relative h-14 w-14 overflow-hidden rounded-xl bg-blue-50">
-                      <Image
-                        src={center.logo}
-                        alt={`${center.name} logo`}
-                        fill
-                        className="object-contain p-2"
-                        sizes="56px"
-                      />
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-wide text-blue-600">
-                        {center.name}
-                      </p>
-                      <h3 className="text-lg font-semibold text-slate-900">
-                        {center.title}
-                      </h3>
-                    </div>
+
+                <div className="relative flex flex-col gap-6">
+                  {/* Logo */}
+                  <div className="relative h-16 w-48">
+                    <Image
+                      src={center.logo}
+                      alt={center.name}
+                      fill
+                      className="object-contain object-left"
+                    />
                   </div>
 
-                  <p className="flex-1 text-sm leading-relaxed text-slate-600">
-                    {center.description}
-                  </p>
+                  {/* Description */}
+                  <p className="text-base leading-relaxed text-slate-700">{center.description}</p>
 
-                  <Link
-                    href={center.href}
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 transition group-hover:text-blue-700"
-                  >
-                    Selengkapnya
-                    <span aria-hidden className="text-lg">
-                      &rarr;
-                    </span>
-                  </Link>
+                  {/* Link */}
+                  <div className="flex items-center gap-2 text-[#5B7CFF] font-semibold transition group-hover:gap-3">
+                    <span>Selengkapnya</span>
+                    <ChevronRight className="h-5 w-5" />
+                  </div>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
-        )}
+        </div>
+
+        {/* Centers of Excellence Section */}
+        <div>
+          <h2 className="mb-8 text-2xl font-bold text-[#262B7E] sm:text-3xl">
+            Centers of Excellence
+          </h2>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {otherCenters.map((center) => (
+              <Link
+                key={center.id}
+                href={`/center-of-excellence/${center.slug}`}
+                className="group flex items-center gap-4 rounded-2xl border-2 border-slate-200 bg-white p-6 transition hover:border-[#5B7CFF] hover:shadow-lg"
+              >
+                {/* Icon */}
+                <div className="relative h-16 w-16 shrink-0 rounded-xl bg-slate-100 p-3">
+                  <Image src={center.logo} alt={center.name} fill className="object-contain p-1" />
+                </div>
+
+                {/* Text */}
+                <h3 className="flex-1 text-lg font-bold uppercase text-[#262B7E]">{center.name}</h3>
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
   );
 }
-

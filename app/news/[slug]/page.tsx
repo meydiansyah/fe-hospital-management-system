@@ -33,7 +33,7 @@ const dummyPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80&auto=format&fit=crop",
     published_at: "9 Mei 2025",
     author: {
-      name: "dr. Ray Hendry, Sp.OT",
+      name: "Sentra Medika",
       avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
     },
     title:
@@ -141,6 +141,160 @@ const dummyPosts: BlogPost[] = [
       <p>Terima kasih kepada seluruh peserta yang telah meramaikan acara ini!</p>
     `,
   },
+  {
+    id: 5,
+    cover:
+      "https://images.unsplash.com/photo-1551076805-e1869033e561?w=800&q=80&auto=format&fit=crop",
+    published_at: "8 Mei 2025",
+    author: {
+      name: "Sentra Medika",
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
+    },
+    title: "Workshop Kesehatan Jantung untuk Masyarakat",
+    summary:
+      "RS Sentra Medika mengadakan workshop gratis tentang pencegahan penyakit jantung untuk masyarakat umum...",
+    slug: "workshop-kesehatan-jantung",
+    content: `
+      <p>RS Sentra Medika mengadakan workshop gratis tentang pencegahan penyakit jantung untuk masyarakat umum.</p>
+      
+      <p>Workshop ini bertujuan untuk meningkatkan kesadaran masyarakat tentang pentingnya menjaga kesehatan jantung sejak dini.</p>
+      
+      <p>Materi yang dibahas meliputi pola makan sehat, olahraga teratur, dan deteksi dini penyakit jantung.</p>
+    `,
+  },
+  {
+    id: 6,
+    cover:
+      "https://images.unsplash.com/photo-1504439468489-c8920d796a29?w=800&q=80&auto=format&fit=crop",
+    published_at: "7 Mei 2025",
+    author: {
+      name: "Sentra Medika",
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
+    },
+    title: "Peluncuran Program Vaksinasi COVID-19 Booster",
+    summary:
+      "Sentra Medika Hospital membuka layanan vaksinasi booster COVID-19 untuk seluruh masyarakat dengan harga terjangkau...",
+    slug: "vaksinasi-covid-booster",
+    content: `
+      <p>Sentra Medika Hospital membuka layanan vaksinasi booster COVID-19 untuk seluruh masyarakat dengan harga terjangkau.</p>
+      
+      <p>Program ini diharapkan dapat meningkatkan kekebalan tubuh masyarakat terhadap virus COVID-19 dan variannya.</p>
+    `,
+  },
+  {
+    id: 7,
+    cover:
+      "https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=800&q=80&auto=format&fit=crop",
+    published_at: "6 Mei 2025",
+    author: {
+      name: "Sentra Medika",
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
+    },
+    title: "Seminar Kesehatan Ibu dan Anak",
+    summary:
+      "Menghadirkan pakar kesehatan untuk membahas pentingnya nutrisi dan perawatan kesehatan ibu hamil dan anak...",
+    slug: "seminar-kesehatan-ibu-anak",
+    content: `
+      <p>Menghadirkan pakar kesehatan untuk membahas pentingnya nutrisi dan perawatan kesehatan ibu hamil dan anak.</p>
+      
+      <p>Seminar ini sangat bermanfaat bagi ibu hamil dan keluarga untuk memahami cara merawat kesehatan ibu dan anak dengan baik.</p>
+    `,
+  },
+  {
+    id: 8,
+    cover:
+      "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=800&q=80&auto=format&fit=crop",
+    published_at: "5 Mei 2025",
+    author: {
+      name: "Sentra Medika",
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
+    },
+    title: "Screening Diabetes Gratis untuk Masyarakat",
+    summary:
+      "RS Sentra Medika mengadakan screening diabetes gratis untuk masyarakat umum sebagai bentuk kepedulian kesehatan...",
+    slug: "screening-diabetes-gratis",
+    content: `
+      <p>RS Sentra Medika mengadakan screening diabetes gratis untuk masyarakat umum sebagai bentuk kepedulian kesehatan.</p>
+      
+      <p>Screening ini penting untuk mendeteksi diabetes sejak dini dan mencegah komplikasi yang lebih serius.</p>
+    `,
+  },
+  {
+    id: 9,
+    cover:
+      "https://images.unsplash.com/photo-1666214280557-f1b5022eb634?w=800&q=80&auto=format&fit=crop",
+    published_at: "4 Mei 2025",
+    author: {
+      name: "Sentra Medika",
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
+    },
+    title: "Peluncuran Unit Hemodialisa Terbaru",
+    summary:
+      "Fasilitas hemodialisa terbaru dengan teknologi canggih siap melayani pasien dengan lebih nyaman dan aman...",
+    slug: "unit-hemodialisa-terbaru",
+    content: `
+      <p>Fasilitas hemodialisa terbaru dengan teknologi canggih siap melayani pasien dengan lebih nyaman dan aman.</p>
+      
+      <p>Unit ini dilengkapi dengan mesin hemodialisa terbaru dan tenaga medis yang berpengalaman.</p>
+    `,
+  },
+  {
+    id: 10,
+    cover:
+      "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=800&q=80&auto=format&fit=crop",
+    published_at: "3 Mei 2025",
+    author: {
+      name: "Sentra Medika",
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
+    },
+    title: "Donor Darah Massal Peringati HUT Kemerdekaan",
+    summary:
+      "Kegiatan donor darah massal yang diikuti ratusan peserta untuk membantu stok darah di PMI...",
+    slug: "donor-darah-massal",
+    content: `
+      <p>Kegiatan donor darah massal yang diikuti ratusan peserta untuk membantu stok darah di PMI.</p>
+      
+      <p>Donor darah adalah kegiatan mulia yang dapat menyelamatkan nyawa banyak orang.</p>
+    `,
+  },
+  {
+    id: 11,
+    cover:
+      "https://images.unsplash.com/photo-1559757175-5700dde675bc?w=800&q=80&auto=format&fit=crop",
+    published_at: "2 Mei 2025",
+    author: {
+      name: "Sentra Medika",
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
+    },
+    title: "Pelatihan CPR untuk Masyarakat Umum",
+    summary:
+      "Pelatihan cardiopulmonary resuscitation (CPR) gratis untuk meningkatkan kesadaran pertolongan pertama...",
+    slug: "pelatihan-cpr",
+    content: `
+      <p>Pelatihan cardiopulmonary resuscitation (CPR) gratis untuk meningkatkan kesadaran pertolongan pertama.</p>
+      
+      <p>CPR adalah teknik pertolongan pertama yang sangat penting untuk menyelamatkan nyawa dalam kondisi darurat.</p>
+    `,
+  },
+  {
+    id: 12,
+    cover:
+      "https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=800&q=80&auto=format&fit=crop",
+    published_at: "1 Mei 2025",
+    author: {
+      name: "Sentra Medika",
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
+    },
+    title: "Launching Aplikasi Mobile Hospital",
+    summary:
+      "Kemudahan akses layanan kesehatan kini di genggaman Anda dengan aplikasi mobile Sentra Medika Hospital...",
+    slug: "launching-aplikasi-mobile",
+    content: `
+      <p>Kemudahan akses layanan kesehatan kini di genggaman Anda dengan aplikasi mobile Sentra Medika Hospital.</p>
+      
+      <p>Aplikasi ini memudahkan pasien untuk membuat janji temu, melihat riwayat medis, dan konsultasi online dengan dokter.</p>
+    `,
+  },
 ];
 
 export default function NewsDetailPage() {
@@ -197,17 +351,20 @@ export default function NewsDetailPage() {
     return dummyPosts.filter((post) => post.slug !== slugParam).slice(0, 3);
   }, [news, slugParam]);
 
-  const formattedDate = originalNews && "published_at" in originalNews && originalNews.published_at
-    ? new Date(originalNews.published_at).toLocaleDateString("id-ID", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : newsItem.published_at;
+  const formattedDate =
+    originalNews && "published_at" in originalNews && originalNews.published_at
+      ? new Date(originalNews.published_at).toLocaleDateString("id-ID", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+      : newsItem.published_at;
 
   const authorName =
     originalNews && "author" in originalNews
-      ? originalNews.author || "Sentra Medika"
+      ? typeof originalNews.author === "string"
+        ? originalNews.author || "Sentra Medika"
+        : "Sentra Medika"
       : newsItem.author.name;
 
   const content =
@@ -337,9 +494,7 @@ export default function NewsDetailPage() {
                       href={`/news/${post.slug}`}
                       className="group block border-b border-slate-200 pb-6 last:border-0"
                     >
-                      <p className="mb-2 text-sm font-medium text-slate-500">
-                        {post.published_at}
-                      </p>
+                      <p className="mb-2 text-sm font-medium text-slate-500">{post.published_at}</p>
                       <h3 className="mb-2 line-clamp-2 font-semibold leading-snug text-slate-900 transition group-hover:text-[#262B7E]">
                         {post.title}
                       </h3>
