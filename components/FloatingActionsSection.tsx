@@ -34,24 +34,46 @@ const actions = [
 
 export default function FloatingActionsSection() {
   return (
-    <section className="relative z-30 -mt-20 px-6 sm:px-8">
-      <div className="mx-auto max-w-4xl">
-        <Card className="flex flex-col gap-6 rounded-[2.5rem] border-none bg-white/95 p-6 shadow-2xl shadow-blue-100/50 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between md:px-10 md:py-8">
-          {actions.map((action) => (
-            <Link
-              key={action.label}
-              href={action.href}
-              className="group flex flex-1 flex-col items-center gap-3 text-center text-sm font-semibold text-slate-700 transition hover:text-blue-600"
-            >
-              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-rose-50 text-rose-500 shadow-inner shadow-rose-100 transition group-hover:scale-105 group-hover:bg-rose-100">
-                <action.icon className="h-6 w-6" />
-              </span>
-              {action.label}
-            </Link>
-          ))}
-        </Card>
-      </div>
-    </section>
+    <>
+      <section className="relative z-30 -mt-20 px-6 sm:px-8 hidden md:block">
+        <div className="mx-auto max-w-4xl">
+          <Card className="flex flex-col gap-6 rounded-[2.5rem] border-none bg-white/95 p-6 shadow-2xl shadow-blue-100/50 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between md:px-10 md:py-8">
+            {actions.map((action) => (
+              <Link
+                key={action.label}
+                href={action.href}
+                className="group flex flex-1 flex-col items-center gap-3 text-center text-sm font-semibold text-slate-700 transition hover:text-blue-600"
+              >
+                <span className="flex h-14 w-14 items-center justify-center rounded-full bg-rose-50 text-rose-500 shadow-inner shadow-rose-100 transition group-hover:scale-105 group-hover:bg-rose-100">
+                  <action.icon className="h-6 w-6" />
+                </span>
+                {action.label}
+              </Link>
+            ))}
+          </Card>
+        </div>
+      </section>
+
+      <section className="relative z-30 -mt-20 px-6 sm:px-8 block md:hidden">
+        <div className="mx-auto max-w-4xl">
+          <Card className="flex flex-col gap-6 rounded-[2.5rem] border-none bg-white/95 p-6 shadow-2xl shadow-blue-100/50 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between md:px-10 md:py-8">
+            <div className="flex flex-col gap-6">
+              {actions.map((action) => (
+                <Link
+                  key={action.label}
+                  href={action.href}
+                  className="group flex flex-1 flex-col items-center gap-3 text-center text-sm font-semibold text-slate-700 transition hover:text-blue-600"
+                >
+                  <span className="flex h-14 w-14 items-center justify-center rounded-full bg-rose-50 text-rose-500 shadow-inner shadow-rose-100 transition group-hover:scale-105 group-hover:bg-rose-100">
+                    <action.icon className="h-6 w-6" />
+                  </span>
+                  {action.label}
+                </Link>
+              ))}
+            </div>
+          </Card>
+        </div>
+      </section>
+    </>
   );
 }
-
