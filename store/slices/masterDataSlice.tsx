@@ -791,7 +791,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchFacilities.fulfilled, (state, action) => {
         state.facilitiesLoading = false;
-        state.facilities = action.payload as unknown[];
+        state.facilities = action.payload as Facility[];
       })
       .addCase(fetchFacilities.rejected, (state, action) => {
         state.facilitiesLoading = false;
@@ -806,7 +806,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchInsurances.fulfilled, (state, action) => {
         state.insurancesLoading = false;
-        state.insurances = action.payload as unknown[];
+        state.insurances = action.payload as Insurance[];
       })
       .addCase(fetchInsurances.rejected, (state, action) => {
         state.insurancesLoading = false;
@@ -821,7 +821,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchPartners.fulfilled, (state, action) => {
         state.partnersLoading = false;
-        state.partners = action.payload as unknown[];
+        state.partners = action.payload as Partner[];
       })
       .addCase(fetchPartners.rejected, (state, action) => {
         state.partnersLoading = false;
@@ -836,7 +836,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchDepartments.fulfilled, (state, action) => {
         state.departmentsLoading = false;
-        state.departments = action.payload as unknown[];
+        state.departments = action.payload as Department[];
       })
       .addCase(fetchDepartments.rejected, (state, action) => {
         state.departmentsLoading = false;
@@ -851,7 +851,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchPositions.fulfilled, (state, action) => {
         state.positionsLoading = false;
-        state.positions = action.payload as unknown[];
+        state.positions = action.payload as Position[];
       })
       .addCase(fetchPositions.rejected, (state, action) => {
         state.positionsLoading = false;
@@ -866,7 +866,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchSpecializations.fulfilled, (state, action) => {
         state.specializationsLoading = false;
-        state.specializations = action.payload as unknown[];
+        state.specializations = action.payload as Specialization[];
       })
       .addCase(fetchSpecializations.rejected, (state, action) => {
         state.specializationsLoading = false;
@@ -881,7 +881,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchSubSpecializations.fulfilled, (state, action) => {
         state.subSpecializationsLoading = false;
-        state.subSpecializations = action.payload as unknown[];
+        state.subSpecializations = action.payload as SubSpecialization[];
       })
       .addCase(fetchSubSpecializations.rejected, (state, action) => {
         state.subSpecializationsLoading = false;
@@ -896,7 +896,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchTechnologySpecializations.fulfilled, (state, action) => {
         state.technologySpecializationsLoading = false;
-        state.technologySpecializations = action.payload as unknown[];
+        state.technologySpecializations = action.payload as TechnologySpecialization[];
       })
       .addCase(fetchTechnologySpecializations.rejected, (state, action) => {
         state.technologySpecializationsLoading = false;
@@ -911,7 +911,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchPolyclinics.fulfilled, (state, action) => {
         state.polyclinicsLoading = false;
-        state.polyclinics = action.payload as unknown[];
+        state.polyclinics = action.payload as Polyclinic[];
       })
       .addCase(fetchPolyclinics.rejected, (state, action) => {
         state.polyclinicsLoading = false;
@@ -926,7 +926,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchOffers.fulfilled, (state, action) => {
         state.offersLoading = false;
-        state.offers = action.payload as unknown[];
+        state.offers = action.payload as Offer[];
       })
       .addCase(fetchOffers.rejected, (state, action) => {
         state.offersLoading = false;
@@ -941,7 +941,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchMemberships.fulfilled, (state, action) => {
         state.membershipsLoading = false;
-        state.memberships = action.payload as unknown[];
+        state.memberships = action.payload as Membership[];
       })
       .addCase(fetchMemberships.rejected, (state, action) => {
         state.membershipsLoading = false;
@@ -956,7 +956,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchArticleCategories.fulfilled, (state, action) => {
         state.articleCategoriesLoading = false;
-        state.articleCategories = action.payload as unknown[];
+        state.articleCategories = action.payload as ArticleCategory[];
       })
       .addCase(fetchArticleCategories.rejected, (state, action) => {
         state.articleCategoriesLoading = false;
@@ -971,7 +971,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchArticleTags.fulfilled, (state, action) => {
         state.articleTagsLoading = false;
-        state.articleTags = action.payload as unknown[];
+        state.articleTags = action.payload as ArticleTag[];
       })
       .addCase(fetchArticleTags.rejected, (state, action) => {
         state.articleTagsLoading = false;
@@ -986,7 +986,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchUniversities.fulfilled, (state, action) => {
         state.universitiesLoading = false;
-        state.universities = action.payload as unknown[];
+        state.universities = action.payload as University[];
       })
       .addCase(fetchUniversities.rejected, (state, action) => {
         state.universitiesLoading = false;
@@ -1001,7 +1001,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchBanks.fulfilled, (state, action) => {
         state.banksLoading = false;
-        state.banks = action.payload as unknown[];
+        state.banks = action.payload as Bank[];
       })
       .addCase(fetchBanks.rejected, (state, action) => {
         state.banksLoading = false;
@@ -1016,7 +1016,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchHospitals.fulfilled, (state, action) => {
         state.hospitalsLoading = false;
-        state.hospitals = action.payload as unknown[];
+        state.hospitals = action.payload as Hospital[];
       })
       .addCase(fetchHospitals.rejected, (state, action) => {
         state.hospitalsLoading = false;
@@ -1031,7 +1031,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchDoctors.fulfilled, (state, action) => {
         state.doctorsLoading = false;
-        state.doctors = action.payload as unknown[];
+        state.doctors = action.payload as Doctor[];
       })
       .addCase(fetchDoctors.rejected, (state, action) => {
         state.doctorsLoading = false;
@@ -1046,7 +1046,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchCenterOfExcellences.fulfilled, (state, action) => {
         state.centerOfExcellencesLoading = false;
-        state.centerOfExcellences = action.payload as unknown[];
+        state.centerOfExcellences = action.payload as CenterOfExcellence[];
       })
       .addCase(fetchCenterOfExcellences.rejected, (state, action) => {
         state.centerOfExcellencesLoading = false;
@@ -1061,7 +1061,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchArticles.fulfilled, (state, action) => {
         state.articlesLoading = false;
-        state.articles = action.payload as unknown[];
+        state.articles = action.payload as Article[];
       })
       .addCase(fetchArticles.rejected, (state, action) => {
         state.articlesLoading = false;
@@ -1076,7 +1076,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchNews.fulfilled, (state, action) => {
         state.newsLoading = false;
-        state.news = action.payload as unknown[];
+        state.news = action.payload as News[];
       })
       .addCase(fetchNews.rejected, (state, action) => {
         state.newsLoading = false;
@@ -1091,7 +1091,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchMilestones.fulfilled, (state, action) => {
         state.milestonesLoading = false;
-        state.milestones = action.payload as unknown[];
+        state.milestones = action.payload as Milestone[];
       })
       .addCase(fetchMilestones.rejected, (state, action) => {
         state.milestonesLoading = false;
@@ -1106,7 +1106,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchDictionaries.fulfilled, (state, action) => {
         state.dictionariesLoading = false;
-        state.dictionaries = action.payload as unknown[];
+        state.dictionaries = action.payload as Dictionary[];
       })
       .addCase(fetchDictionaries.rejected, (state, action) => {
         state.dictionariesLoading = false;
@@ -1121,7 +1121,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchBanners.fulfilled, (state, action) => {
         state.bannersLoading = false;
-        state.banners = action.payload as unknown[];
+        state.banners = action.payload as Banner[];
       })
       .addCase(fetchBanners.rejected, (state, action) => {
         state.bannersLoading = false;
@@ -1151,7 +1151,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchFaqs.fulfilled, (state, action) => {
         state.faqsLoading = false;
-        state.faqs = action.payload as unknown[];
+        state.faqs = action.payload as Faq[];
       })
       .addCase(fetchFaqs.rejected, (state, action) => {
         state.faqsLoading = false;
@@ -1166,7 +1166,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchBenefits.fulfilled, (state, action) => {
         state.benefitsLoading = false;
-        state.benefits = action.payload as unknown[];
+        state.benefits = action.payload as Benefit[];
       })
       .addCase(fetchBenefits.rejected, (state, action) => {
         state.benefitsLoading = false;
@@ -1181,7 +1181,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchHelpCenters.fulfilled, (state, action) => {
         state.helpCentersLoading = false;
-        state.helpCenters = action.payload as unknown[];
+        state.helpCenters = action.payload as HelpCenter[];
       })
       .addCase(fetchHelpCenters.rejected, (state, action) => {
         state.helpCentersLoading = false;
@@ -1196,7 +1196,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchStatistics.fulfilled, (state, action) => {
         state.statisticsLoading = false;
-        state.statistics = action.payload as unknown[];
+        state.statistics = action.payload as Statistic[];
       })
       .addCase(fetchStatistics.rejected, (state, action) => {
         state.statisticsLoading = false;
@@ -1211,7 +1211,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(fetchMedicalTourism.fulfilled, (state, action) => {
         state.medicalTourismLoading = false;
-        state.medicalTourism = action.payload as unknown[];
+        state.medicalTourism = action.payload as MedicalTourism[];
       })
       .addCase(fetchMedicalTourism.rejected, (state, action) => {
         state.medicalTourismLoading = false;

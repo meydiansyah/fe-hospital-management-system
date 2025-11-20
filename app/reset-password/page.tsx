@@ -2,14 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const searchParams = useSearchParams();
-  const token = searchParams.get("token");
-  
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const token = searchParams.get("token"); // TODO: Use token for password reset API call
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -20,13 +21,13 @@ export default function ResetPasswordPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       alert("Password tidak cocok!");
       return;
     }
-    
+
     // TODO: Implement reset password logic with API
     // Handle reset password logic here with token
     setIsSubmitted(true);
@@ -59,7 +60,9 @@ export default function ResetPasswordPage() {
             <>
               {/* Header */}
               <div className="space-y-2">
-                <h1 className="text-3xl font-bold text-slate-900">Atur Ulang Password</h1>
+                <h1 className="text-3xl font-bold text-slate-900">
+                  Atur Ulang Password
+                </h1>
                 <p className="text-slate-600">
                   Masukkan kata sandi baru untuk mengamankan kembali akun Anda.
                 </p>
@@ -68,7 +71,10 @@ export default function ResetPasswordPage() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Password Input */}
                 <div className="space-y-2">
-                  <label htmlFor="password" className="block text-sm font-medium text-slate-700">
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-slate-700"
+                  >
                     Password
                   </label>
                   <div className="relative">
@@ -88,7 +94,11 @@ export default function ResetPasswordPage() {
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-600"
                     >
-                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      {showPassword ? (
+                        <EyeOff className="h-5 w-5" />
+                      ) : (
+                        <Eye className="h-5 w-5" />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -115,7 +125,9 @@ export default function ResetPasswordPage() {
                     />
                     <button
                       type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-600"
                     >
                       {showConfirmPassword ? (
@@ -158,9 +170,12 @@ export default function ResetPasswordPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <h1 className="text-3xl font-bold text-slate-900">Password Berhasil Diubah!</h1>
+                  <h1 className="text-3xl font-bold text-slate-900">
+                    Password Berhasil Diubah!
+                  </h1>
                   <p className="text-slate-600">
-                    Password Anda telah berhasil diperbarui. Silakan login dengan password baru Anda.
+                    Password Anda telah berhasil diperbarui. Silakan login
+                    dengan password baru Anda.
                   </p>
                 </div>
 
@@ -180,3 +195,19 @@ export default function ResetPasswordPage() {
   );
 }
 
+export default function ResetPasswordPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="text-center">
+            <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-[#5B7CFF] border-t-transparent"></div>
+            <p className="mt-4 text-slate-600">Memuat...</p>
+          </div>
+        </div>
+      }
+    >
+      <ResetPasswordForm />
+    </Suspense>
+  );
+}
