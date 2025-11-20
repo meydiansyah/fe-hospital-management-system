@@ -28,10 +28,8 @@ const FeedbackForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    alert(
-      `${t("feedback.alerts.success")}\n` + JSON.stringify(formData, null, 2)
-    );
+    // TODO: Implement feedback submission with API
+    alert(t("feedback.alerts.success"));
     dispatch(resetForm());
   };
 

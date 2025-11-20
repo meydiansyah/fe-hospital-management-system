@@ -3,10 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { RootState } from "@/store";
+import { transformNews, getImageUrl, getDescription } from "@/lib/dataTransformers";
 import { Share2, Link as LinkIcon } from "lucide-react";
 import { notFound } from "next/navigation";
 
-// Import dummy data from main news page
 interface BlogPost {
   id: number;
   cover: string;
@@ -21,7 +25,7 @@ interface BlogPost {
   content?: string;
 }
 
-// TEMPORARY: Dummy data (same as in /news/page.tsx)
+// Dummy data - will be used when API is not ready
 const dummyPosts: BlogPost[] = [
   {
     id: 1,
@@ -141,6 +145,7 @@ const dummyPosts: BlogPost[] = [
 
 export default function NewsDetailPage() {
   const params = useParams();
+  const { t } = useTranslation();
 
   // Handle params which can be string, string[], or undefined
   const slugParam = Array.isArray(params.slug)
@@ -149,24 +154,68 @@ export default function NewsDetailPage() {
     ? params.slug
     : "";
 
-  // TEMPORARY: Use dummy data
-  const newsItem = dummyPosts.find((post) => post.slug === slugParam);
+  const { news, newsLoading } = useSelector((state: RootState) => state.masterData);
 
-  // ORIGINAL REDUX CODE (keep commented):
-  // const { t } = useTranslation();
-  // const { news, newsLoading } = useSelector((state: RootState) => state.masterData);
-  // const newsItem = useMemo(() => {
-  //   if (!news || news.length === 0) return null;
-  //   const found = news.find((n) => n.slug === slugParam);
-  //   return found ? transformNews(found) : null;
-  // }, [news, slugParam]);
+  // Use API data if available, otherwise fallback to dummy data
+  const newsItem = useMemo(() => {
+    if (news && news.length > 0) {
+      const found = news.find((n) => n.slug === slugParam);
+      return found ? transformNews(found) : null;
+    }
+    // Fallback to dummy data
+    return dummyPosts.find((post) => post.slug === slugParam) || null;
+  }, [news, slugParam]);
+
+  const originalNews = useMemo(() => {
+    if (news && news.length > 0) {
+      return news.find((n) => n.slug === slugParam);
+    }
+    return dummyPosts.find((post) => post.slug === slugParam);
+  }, [news, slugParam]);
 
   if (!newsItem) {
     notFound();
   }
 
+  const coverImage =
+    originalNews && "images" in originalNews
+      ? getImageUrl(
+          originalNews.images,
+          "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1600&q=80&auto=format&fit=crop"
+        )
+      : newsItem.cover;
+
   // Related news (exclude current news)
-  const relatedNews = dummyPosts.filter((post) => post.slug !== slugParam).slice(0, 3);
+  const relatedNews = useMemo(() => {
+    if (news && news.length > 0) {
+      return news
+        .filter((n) => n.slug !== slugParam && n.status === "published" && n.published_at)
+        .slice(0, 3)
+        .map(transformNews);
+    }
+    // Fallback to dummy data
+    return dummyPosts.filter((post) => post.slug !== slugParam).slice(0, 3);
+  }, [news, slugParam]);
+
+  const formattedDate = originalNews && "published_at" in originalNews && originalNews.published_at
+    ? new Date(originalNews.published_at).toLocaleDateString("id-ID", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : newsItem.published_at;
+
+  const authorName =
+    originalNews && "author" in originalNews
+      ? originalNews.author || "Sentra Medika"
+      : newsItem.author.name;
+
+  const content =
+    originalNews && "content" in originalNews
+      ? originalNews.content || newsItem.summary
+      : originalNews && "content" in originalNews
+      ? originalNews.content
+      : newsItem.summary;
 
   return (
     <div className="min-h-screen bg-white pt-20">
@@ -181,7 +230,7 @@ export default function NewsDetailPage() {
                 href="/news"
                 className="inline-block rounded-full bg-blue-50 px-4 py-1.5 text-sm font-medium text-[#262B7E] transition hover:bg-blue-100"
               >
-                Sentra Medika Cisalak
+                {t("news.backToList") || "Kembali ke Berita"}
               </Link>
             </div>
 
@@ -194,26 +243,43 @@ export default function NewsDetailPage() {
             <div className="mb-6 flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-center sm:justify-between">
               {/* Meta Info */}
               <div className="space-y-1 text-sm text-slate-600">
-                <p>{newsItem.published_at}</p>
-                <div>
-                  <span className="text-slate-600">Narasumber:</span>{" "}
-                  <span className="font-medium text-[#262B7E]">{newsItem.author.name}</span>
-                </div>
-                <p className="text-slate-500">Ditulis oleh Tim Medis Sentra Medika Hospital</p>
+                {formattedDate && <p>{formattedDate}</p>}
+                {authorName && (
+                  <div>
+                    <span className="text-slate-600">{t("news.author") || "Narasumber"}:</span>{" "}
+                    <span className="font-medium text-[#262B7E]">{authorName}</span>
+                  </div>
+                )}
+                <p className="text-slate-500">
+                  {t("news.writtenBy") || "Ditulis oleh Tim Medis Sentra Medika Hospital"}
+                </p>
               </div>
 
               {/* Action Buttons */}
               <div className="flex gap-2">
                 <button
                   type="button"
+                  onClick={() => {
+                    if (navigator.share) {
+                      navigator.share({
+                        title: newsItem.title,
+                        text: newsItem.summary,
+                        url: window.location.href,
+                      });
+                    }
+                  }}
                   className="inline-flex items-center gap-2 rounded-lg border border-[#262B7E] bg-white px-4 py-2 text-sm font-semibold text-[#262B7E] transition hover:bg-[#262B7E] hover:text-white"
                 >
                   <Share2 className="h-4 w-4" />
-                  Bagikan
+                  {t("news.share") || "Bagikan"}
                 </button>
                 <button
                   type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(window.location.href);
+                  }}
                   className="inline-flex items-center justify-center rounded-lg border border-[#262B7E] bg-white p-2 text-[#262B7E] transition hover:bg-[#262B7E] hover:text-white"
+                  aria-label={t("news.copyLink") || "Salin tautan"}
                 >
                   <LinkIcon className="h-4 w-4" />
                 </button>
@@ -223,7 +289,7 @@ export default function NewsDetailPage() {
             {/* Featured Image */}
             <div className="relative mb-8 h-64 w-full overflow-hidden rounded-xl sm:h-96">
               <Image
-                src={newsItem.cover}
+                src={coverImage}
                 alt={newsItem.title}
                 fill
                 priority
@@ -236,7 +302,7 @@ export default function NewsDetailPage() {
             <article className="prose prose-slate max-w-none prose-headings:text-slate-900 prose-p:text-slate-700 prose-a:text-[#262B7E] prose-strong:text-slate-900">
               <div
                 dangerouslySetInnerHTML={{
-                  __html: newsItem.content || newsItem.summary,
+                  __html: content || "",
                 }}
                 className="text-base leading-relaxed"
               />
@@ -256,24 +322,34 @@ export default function NewsDetailPage() {
           {/* Right Column - Sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-24">
-              <h2 className="mb-6 text-xl font-bold text-slate-900">Berita Lainnya</h2>
-              <div className="space-y-6">
-                {relatedNews.map((post) => (
-                  <Link
-                    key={post.id}
-                    href={`/news/${post.slug}`}
-                    className="group block border-b border-slate-200 pb-6 last:border-0"
-                  >
-                    <p className="mb-2 text-sm font-medium text-slate-500">{post.published_at}</p>
-                    <h3 className="mb-2 line-clamp-2 font-semibold leading-snug text-slate-900 transition group-hover:text-[#262B7E]">
-                      {post.title}
-                    </h3>
-                    <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">
-                      {post.summary}
-                    </p>
-                  </Link>
-                ))}
-              </div>
+              <h2 className="mb-6 text-xl font-bold text-slate-900">
+                {t("news.relatedNews") || "Berita Lainnya"}
+              </h2>
+              {relatedNews.length === 0 ? (
+                <p className="text-sm text-slate-500">
+                  {t("news.noRelatedNews") || "Tidak ada berita terkait"}
+                </p>
+              ) : (
+                <div className="space-y-6">
+                  {relatedNews.map((post) => (
+                    <Link
+                      key={post.id}
+                      href={`/news/${post.slug}`}
+                      className="group block border-b border-slate-200 pb-6 last:border-0"
+                    >
+                      <p className="mb-2 text-sm font-medium text-slate-500">
+                        {post.published_at}
+                      </p>
+                      <h3 className="mb-2 line-clamp-2 font-semibold leading-snug text-slate-900 transition group-hover:text-[#262B7E]">
+                        {post.title}
+                      </h3>
+                      <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">
+                        {post.summary}
+                      </p>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

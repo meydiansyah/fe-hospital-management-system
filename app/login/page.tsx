@@ -12,13 +12,13 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // TODO: Implement login logic with API
     // Handle login logic here
-    console.log("Login:", { email, password });
   };
 
   const handleGoogleLogin = () => {
+    // TODO: Implement Google login with API
     // Handle Google login
-    console.log("Google login");
   };
 
   return (

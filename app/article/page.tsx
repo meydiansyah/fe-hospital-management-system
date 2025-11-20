@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-// import { useMemo } from "react";
-// import { useSelector } from "react-redux";
-// import { useTranslation } from "react-i18next";
-// import { RootState } from "@/store";
-// import { transformArticle } from "@/lib/dataTransformers";
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { RootState } from "@/store";
+import { transformArticle } from "@/lib/dataTransformers";
 
 interface BlogPost {
   id: number;
@@ -17,7 +17,7 @@ interface BlogPost {
   slug: string;
 }
 
-// TEMPORARY: Dummy data untuk testing
+// Dummy data - will be used when API is not ready
 const dummyArticles: BlogPost[] = [
   {
     id: 1,
@@ -84,7 +84,10 @@ const dummyArticles: BlogPost[] = [
 // Featured Article Card (Large)
 const FeaturedArticleCard = ({ article }: { article: BlogPost }) => {
   return (
-    <Link href={`/article/${article.slug}`} className="group block overflow-hidden rounded-2xl">
+    <Link
+      href={`/article/${article.slug}`}
+      className="group block overflow-hidden rounded-2xl"
+    >
       {/* Image */}
       <div className="relative h-64 w-full overflow-hidden sm:h-80 lg:h-96">
         <Image
@@ -102,8 +105,12 @@ const FeaturedArticleCard = ({ article }: { article: BlogPost }) => {
         <h2 className="text-2xl font-bold leading-tight text-slate-900 transition group-hover:text-[#262B7E] sm:text-3xl">
           {article.title}
         </h2>
-        <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">{article.summary}</p>
-        <p className="text-sm font-medium text-slate-500">{article.published_at}</p>
+        <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">
+          {article.summary}
+        </p>
+        <p className="text-sm font-medium text-slate-500">
+          {article.published_at}
+        </p>
       </div>
     </Link>
   );
@@ -112,7 +119,10 @@ const FeaturedArticleCard = ({ article }: { article: BlogPost }) => {
 // Small Article Card (List) - Horizontal Layout
 const SmallArticleCard = ({ article }: { article: BlogPost }) => {
   return (
-    <Link href={`/article/${article.slug}`} className="group flex h-full gap-4 p-2">
+    <Link
+      href={`/article/${article.slug}`}
+      className="group flex h-full gap-4 p-2"
+    >
       {/* Image - Left */}
       <div className="relative h-full w-36 shrink-0 overflow-hidden rounded-xl lg:w-40">
         <Image
@@ -129,7 +139,9 @@ const SmallArticleCard = ({ article }: { article: BlogPost }) => {
         <h3 className="mb-2 line-clamp-3 text-base font-bold leading-tight text-slate-900 transition group-hover:text-[#262B7E]">
           {article.title}
         </h3>
-        <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">{article.summary}</p>
+        <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">
+          {article.summary}
+        </p>
       </div>
     </Link>
   );
@@ -152,128 +164,180 @@ const ArticleGridCard = ({ article }: { article: BlogPost }) => {
 
       {/* Content */}
       <div className="flex flex-1 flex-col">
-        <p className="mb-2 text-sm font-medium text-slate-500">{article.published_at}</p>
+        <p className="mb-2 text-sm font-medium text-slate-500">
+          {article.published_at}
+        </p>
         <h3 className="mb-3 line-clamp-2 text-xl font-bold leading-tight text-slate-900 transition group-hover:text-[#262B7E]">
           {article.title}
         </h3>
-        <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">{article.summary}</p>
+        <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">
+          {article.summary}
+        </p>
       </div>
     </Link>
   );
 };
 
 export default function ArticlePage() {
-  // TEMPORARY: Use dummy data
-  const articles = dummyArticles;
-  const featuredArticle = articles[0]; // First article as featured
-  const sideArticles = articles.slice(1, 4); // Next 3 articles for sidebar
-  const allArticles = articles.slice(0, 3); // First 3 for "Semua Artikel"
-  const latestArticles = articles.slice(3, 6); // Next 3 for "Artikel Terbaru"
-  const recommendedArticles = articles.slice(0, 3); // First 3 for "Rekomendasi"
+  const { t } = useTranslation();
+  const { articles, articlesLoading } = useSelector(
+    (state: RootState) => state.masterData
+  );
 
-  // ORIGINAL REDUX CODE (keep commented):
-  // const { t } = useTranslation();
-  // const { articles, articlesLoading } = useSelector((state: RootState) => state.masterData);
-  // const posts: BlogPost[] = useMemo(() => {
-  //   return articles
-  //     .filter((a) => a.status === "published" && a.published_at)
-  //     .map(transformArticle) as BlogPost[];
-  // }, [articles]);
+  // Use API data if available, otherwise fallback to dummy data
+  const posts: BlogPost[] = useMemo(() => {
+    if (articles && articles.length > 0) {
+      return articles
+        .filter((a) => a.status === "published" && a.published_at)
+        .map(transformArticle) as BlogPost[];
+    }
+    // Fallback to dummy data when API is not ready
+    return dummyArticles;
+  }, [articles]);
+
+  const featuredArticle = posts[0]; // First article as featured
+  const sideArticles = posts.slice(1, 4); // Next 3 articles for sidebar
+  const allArticles = posts.slice(0, 3); // First 3 for "Semua Artikel"
+  const latestArticles = posts.slice(3, 6); // Next 3 for "Artikel Terbaru"
+  const recommendedArticles = posts.slice(0, 3); // First 3 for "Rekomendasi"
+
+  // Don't show loading if we have dummy data
+  if (articlesLoading && (!articles || articles.length === 0)) {
+    return (
+      <div className="min-h-screen bg-white pt-20">
+        <div className="mx-auto max-w-7xl px-4 py-12 text-center">
+          <p className="text-slate-600">
+            {t("article.loading") || "Memuat artikel..."}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (posts.length === 0) {
+    return (
+      <div className="min-h-screen bg-white pt-20">
+        <div className="mx-auto max-w-7xl px-4 py-12 text-center">
+          <p className="text-slate-600">
+            {t("article.noArticles") || "Tidak ada artikel tersedia"}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white pt-20">
       {/* Hero Section - Featured Article + Side Articles */}
-      <section className="bg-white py-8 lg:py-12">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8">
-            {/* Left: Featured Article */}
-            <div className="lg:col-span-8">
-              <FeaturedArticleCard article={featuredArticle} />
+      {featuredArticle && (
+        <section className="bg-white py-8 lg:py-12">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8">
+              {/* Left: Featured Article */}
+              <div className="lg:col-span-8">
+                <FeaturedArticleCard article={featuredArticle} />
+              </div>
+
+              {/* Right: Side Articles List - Equal height to featured */}
+              {sideArticles.length > 0 && (
+                <div className="flex flex-col lg:col-span-4">
+                  {sideArticles.map((article, index) => (
+                    <div
+                      key={article.id}
+                      className={`flex-1 ${
+                        index !== sideArticles.length - 1 ? "mb-4" : ""
+                      }`}
+                    >
+                      <SmallArticleCard article={article} />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Section 1: Semua Artikel */}
+      {allArticles.length > 0 && (
+        <section className="bg-white py-12 lg:py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            {/* Section Header */}
+            <div className="mb-8 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+                {t("article.allArticles") || "Semua Artikel"}
+              </h2>
+              <Link
+                href="/article"
+                className="inline-flex items-center rounded-lg border-2 border-[#262B7E] px-6 py-2 text-sm font-semibold text-[#262B7E] transition hover:bg-[#262B7E] hover:text-white"
+              >
+                {t("article.viewAll") || "Lihat Semua"}
+              </Link>
             </div>
 
-            {/* Right: Side Articles List - Equal height to featured */}
-            <div className="flex flex-col lg:col-span-4">
-              {sideArticles.map((article, index) => (
-                <div
-                  key={article.id}
-                  className={`flex-1 ${index !== sideArticles.length - 1 ? "mb-4" : ""}`}
-                >
-                  <SmallArticleCard article={article} />
-                </div>
+            {/* Articles Grid */}
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {allArticles.map((article) => (
+                <ArticleGridCard key={article.id} article={article} />
               ))}
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Section 1: Semua Artikel */}
-      <section className="bg-white py-12 lg:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Section Header */}
-          <div className="mb-8 flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">Semua Artikel</h2>
-            <Link
-              href="/article/all"
-              className="inline-flex items-center rounded-lg border-2 border-[#262B7E] px-6 py-2 text-sm font-semibold text-[#262B7E] transition hover:bg-[#262B7E] hover:text-white"
-            >
-              Lihat Semua
-            </Link>
-          </div>
-
-          {/* Articles Grid */}
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {allArticles.map((article) => (
-              <ArticleGridCard key={article.id} article={article} />
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Section 2: Artikel Terbaru */}
-      <section className="bg-slate-50 py-12 lg:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Section Header */}
-          <div className="mb-8 flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">Artikel Terbaru</h2>
-            <Link
-              href="/article/latest"
-              className="inline-flex items-center rounded-lg border-2 border-[#262B7E] px-6 py-2 text-sm font-semibold text-[#262B7E] transition hover:bg-[#262B7E] hover:text-white"
-            >
-              Lihat Semua
-            </Link>
-          </div>
+      {latestArticles.length > 0 && (
+        <section className="bg-slate-50 py-12 lg:py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            {/* Section Header */}
+            <div className="mb-8 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+                {t("article.latestArticles") || "Artikel Terbaru"}
+              </h2>
+              <Link
+                href="/article"
+                className="inline-flex items-center rounded-lg border-2 border-[#262B7E] px-6 py-2 text-sm font-semibold text-[#262B7E] transition hover:bg-[#262B7E] hover:text-white"
+              >
+                {t("article.viewAll") || "Lihat Semua"}
+              </Link>
+            </div>
 
-          {/* Articles Grid */}
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {latestArticles.map((article) => (
-              <ArticleGridCard key={article.id} article={article} />
-            ))}
+            {/* Articles Grid */}
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {latestArticles.map((article) => (
+                <ArticleGridCard key={article.id} article={article} />
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Section 3: Rekomendasi Artikel */}
-      <section className="bg-white py-12 lg:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Section Header */}
-          <div className="mb-8 flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">Rekomendasi Artikel</h2>
-            <Link
-              href="/article/recommended"
-              className="inline-flex items-center rounded-lg border-2 border-[#262B7E] px-6 py-2 text-sm font-semibold text-[#262B7E] transition hover:bg-[#262B7E] hover:text-white"
-            >
-              Lihat Semua
-            </Link>
-          </div>
+      {recommendedArticles.length > 0 && (
+        <section className="bg-white py-12 lg:py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            {/* Section Header */}
+            <div className="mb-8 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+                {t("article.recommendedArticles") || "Rekomendasi Artikel"}
+              </h2>
+              <Link
+                href="/article"
+                className="inline-flex items-center rounded-lg border-2 border-[#262B7E] px-6 py-2 text-sm font-semibold text-[#262B7E] transition hover:bg-[#262B7E] hover:text-white"
+              >
+                {t("article.viewAll") || "Lihat Semua"}
+              </Link>
+            </div>
 
-          {/* Articles Grid */}
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {recommendedArticles.map((article) => (
-              <ArticleGridCard key={article.id} article={article} />
-            ))}
+            {/* Articles Grid */}
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {recommendedArticles.map((article) => (
+                <ArticleGridCard key={article.id} article={article} />
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }

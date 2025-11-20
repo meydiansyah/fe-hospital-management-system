@@ -98,8 +98,8 @@ export default function MainNav({ hideTopBar, onGetStarted }: MainNavProps) {
         href: "/center-of-excellence",
         children: centerChildren,
       },
-      { label: t("technology"), href: "/technology" },
-      { label: t("partner"), href: "/partner" },
+      { label: t("nav_technology"), href: "/technology" },
+      { label: t("nav_partner"), href: "/partner" },
       { label: t("media"), href: "/media" },
     ],
     [t, hospitalChildren, centerChildren]

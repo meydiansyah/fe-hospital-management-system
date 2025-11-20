@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { MapPin } from "lucide-react";
-// TEMPORARY: Menggunakan dummy data untuk testing
+import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import type { RootState } from "@/store";
+import { transformHospital } from "@/lib/dataTransformers";
 import { hospitalDetails } from "./[slug]/page";
-// import { useSelector } from "react-redux";
-// import type { RootState } from "@/store";
-// import { transformHospital } from "@/lib/dataTransformers";
 
-// TEMPORARY: Transform function untuk dummy data
+// Transform function untuk dummy data
 function transformDummyHospital(hospital: (typeof hospitalDetails)[0]) {
   return {
     id: hospital.slug,
@@ -22,48 +22,71 @@ function transformDummyHospital(hospital: (typeof hospitalDetails)[0]) {
 }
 
 export default function HospitalPage() {
-  // TEMPORARY: Menggunakan dummy data
-  const transformedHospitals = hospitalDetails.map(transformDummyHospital);
+  const { t } = useTranslation();
+  const { hospitals, hospitalsLoading } = useSelector(
+    (state: RootState) => state.masterData
+  );
 
-  // ORIGINAL CODE (commented for easy restore):
-  // const { hospitals, hospitalsLoading } = useSelector((state: RootState) => state.masterData);
-  // if (hospitalsLoading) {
-  //   return (
-  //     <section className="bg-white pt-32 pb-12">
-  //       <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 sm:px-6 lg:px-8">
-  //         <div className="text-center">
-  //           <p className="text-slate-600">Memuat data rumah sakit...</p>
-  //         </div>
-  //       </div>
-  //     </section>
-  //   );
-  // }
-  // const transformedHospitals = hospitals
-  //   .filter((h) => h.is_active)
-  //   .map((hospital) => {
-  //     const transformed = transformHospital(hospital);
-  //     const distance = "12 KM";
-  //     return { ...transformed, distance };
-  //   });
+  // Use API data if available, otherwise fallback to dummy data
+  const transformedHospitals =
+    hospitals && hospitals.length > 0
+      ? hospitals
+          .filter((h) => h.is_active)
+          .map((hospital) => {
+            const transformed = transformHospital(hospital);
+            const distance = "12 KM"; // Placeholder - can be enhanced with geolocation
+            return { ...transformed, distance };
+          })
+      : hospitalDetails.map(transformDummyHospital);
+
+  // Don't show loading if we have dummy data
+  if (hospitalsLoading && (!hospitals || hospitals.length === 0)) {
+    return (
+      <section className="bg-white pt-32 pb-12">
+        <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-slate-600">
+              {t("hospital.loading") || "Memuat data rumah sakit..."}
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (transformedHospitals.length === 0) {
+    return (
+      <section className="bg-white pt-32 pb-12">
+        <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-slate-600">
+              {t("hospital.noHospitals") || "Tidak ada rumah sakit tersedia"}
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="bg-white pt-32 pb-12">
       <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-2">
             <span className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-red-500">
-              Kunjungi
+              {t("hospital.visit") || "Kunjungi"}
             </span>
             <h2 className="text-3xl font-semibold text-slate-900 sm:text-4xl">
-              Rumah Sakit Sentra Medika
+              {t("hospital.title") || "Rumah Sakit Sentra Medika"}
             </h2>
             <p className="text-sm text-slate-500 sm:max-w-lg">
-              Temukan rumah sakit Sentra Medika terdekat dan rencanakan kunjungan Anda dengan mudah
-              melalui peta dan profil layanan lengkap.
+              {t("hospital.description") ||
+                "Temukan rumah sakit Sentra Medika terdekat dan rencanakan kunjungan Anda dengan mudah melalui peta dan profil layanan lengkap."}
             </p>
           </div>
           <span className="inline-flex items-center gap-2 self-start rounded-full bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700">
             <MapPin className="h-4 w-4" />
-            Jangkauan Nasional
+            {t("hospital.nationalCoverage") || "Jangkauan Nasional"}
           </span>
         </div>
 
@@ -87,15 +110,16 @@ export default function HospitalPage() {
                 <Link
                   href={hospital.direction}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center rounded-full bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
                 >
-                  Direction
+                  {t("hospital.direction") || "Direction"}
                 </Link>
                 <Link
                   href={hospital.profile}
                   className="text-slate-600 transition hover:text-blue-600"
                 >
-                  Lihat Profil
+                  {t("hospital.viewProfile") || "Lihat Profil"}
                 </Link>
               </div>
             </div>

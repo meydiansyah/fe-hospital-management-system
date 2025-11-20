@@ -11,8 +11,8 @@ export default function ForgotPasswordPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // TODO: Implement forgot password logic with API
     // Handle forgot password logic here
-    console.log("Reset password for:", email);
     setIsSubmitted(true);
   };
 

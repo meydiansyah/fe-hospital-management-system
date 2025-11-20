@@ -11,7 +11,8 @@ export default function SearchBar() {
   const { t } = useTranslation();
 
   const handleSearch = () => {
-    console.log("Searching for:", searchQuery);
+    // TODO: Implement search navigation
+    // Navigate to search page with query
   };
 
   // Motion value for scroll

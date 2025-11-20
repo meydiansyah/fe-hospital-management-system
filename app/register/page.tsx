@@ -17,13 +17,13 @@ export default function RegisterPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // TODO: Implement register logic with API
     // Handle register logic here
-    console.log("Register:", formData);
   };
 
   const handleGoogleRegister = () => {
+    // TODO: Implement Google register with API
     // Handle Google register
-    console.log("Google register");
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

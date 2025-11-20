@@ -135,12 +135,11 @@ const useDoctorStore = () => {
       };
     });
 
+  // Use API data if available, otherwise fallback to mock data
   return {
     doctors: transformedDoctors.length > 0 ? transformedDoctors : mockDoctors,
     loading: doctorsLoading,
     error: null,
-    useMockData: transformedDoctors.length === 0,
-    setUseMockData: () => {},
   };
 };
 
@@ -224,8 +223,6 @@ interface FiltersContentProps {
   setSearchQuery: (value: string) => void;
   filters: Filters;
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
-  useMockData: boolean;
-  setUseMockData: (value: boolean) => void;
   onReset: () => void;
   t: TFunction;
 }
@@ -235,8 +232,6 @@ const FiltersContent: React.FC<FiltersContentProps> = ({
   setSearchQuery,
   filters,
   setFilters,
-  useMockData,
-  setUseMockData,
   onReset,
   t,
 }) => (
@@ -336,24 +331,13 @@ const FiltersContent: React.FC<FiltersContentProps> = ({
       />
     </div>
 
-    <div className="border-t border-gray-200 pt-4">
-      <label className="flex items-center gap-2 text-sm text-gray-700">
-        <input
-          type="checkbox"
-          checked={useMockData}
-          onChange={(e) => setUseMockData(e.target.checked)}
-          className="h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
-        />
-        Gunakan data simulasi
-      </label>
-    </div>
   </div>
 );
 
 // ==== Main Component ====
 const DoctorSearch: React.FC = () => {
   const { t } = useTranslation();
-  const { doctors, loading, useMockData, setUseMockData } = useDoctorStore();
+  const { doctors, loading } = useDoctorStore();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filters, setFilters] = useState<Filters>({
     location: "",
@@ -427,8 +411,6 @@ const DoctorSearch: React.FC = () => {
                 setSearchQuery={setSearchQuery}
                 filters={filters}
                 setFilters={setFilters}
-                useMockData={useMockData}
-                setUseMockData={setUseMockData}
                 onReset={handleResetFilters}
                 t={t}
               />
@@ -445,8 +427,6 @@ const DoctorSearch: React.FC = () => {
                 setSearchQuery={setSearchQuery}
                 filters={filters}
                 setFilters={setFilters}
-                useMockData={useMockData}
-                setUseMockData={setUseMockData}
                 onReset={handleResetFilters}
                 t={t}
               />

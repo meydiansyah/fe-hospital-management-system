@@ -4,11 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useMemo } from "react";
-// import { useMemo } from "react";
-// import { useSelector } from "react-redux";
-// import { useTranslation } from "react-i18next";
-// import { RootState } from "@/store";
-// import { transformNews } from "@/lib/dataTransformers";
+import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { RootState } from "@/store";
+import { transformNews } from "@/lib/dataTransformers";
 
 interface BlogPost {
   id: number;
@@ -23,35 +22,7 @@ interface BlogPost {
   slug: string;
 }
 
-const NewsCard = ({ cover, published_at, title, summary, slug }: BlogPost) => {
-  return (
-    <Link href={`/news/${slug}`} className="group flex flex-col">
-      {/* Image */}
-      <div className="relative mb-4 h-56 w-full overflow-hidden rounded-xl">
-        <Image
-          src={cover}
-          alt={title}
-          fill
-          className="object-cover transition duration-300 group-hover:scale-105"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
-      </div>
-
-      {/* Date */}
-      <p className="mb-3 text-sm font-medium text-slate-600">{published_at}</p>
-
-      {/* Title */}
-      <h3 className="mb-3 line-clamp-2 text-xl font-bold leading-tight text-slate-900 transition group-hover:text-blue-600">
-        {title}
-      </h3>
-
-      {/* Summary */}
-      <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">{summary}</p>
-    </Link>
-  );
-};
-
-// TEMPORARY: Dummy data untuk testing
+// Dummy data - will be used when API is not ready
 const dummyPosts: BlogPost[] = [
   {
     id: 1,
@@ -224,19 +195,63 @@ const dummyPosts: BlogPost[] = [
   },
 ];
 
+const NewsCard = ({ cover, published_at, title, summary, slug }: BlogPost) => {
+  return (
+    <Link href={`/news/${slug}`} className="group flex flex-col">
+      {/* Image */}
+      <div className="relative mb-4 h-56 w-full overflow-hidden rounded-xl">
+        <Image
+          src={cover}
+          alt={title}
+          fill
+          className="object-cover transition duration-300 group-hover:scale-105"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
+      </div>
+
+      {/* Date */}
+      <p className="mb-3 text-sm font-medium text-slate-600">{published_at}</p>
+
+      {/* Title */}
+      <h3 className="mb-3 line-clamp-2 text-xl font-bold leading-tight text-slate-900 transition group-hover:text-blue-600">
+        {title}
+      </h3>
+
+      {/* Summary */}
+      <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">{summary}</p>
+    </Link>
+  );
+};
+
 export default function NewsPage() {
+  const { t } = useTranslation();
+  const { news, newsLoading } = useSelector((state: RootState) => state.masterData);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 9; // Show 9 posts per page
 
-  // TEMPORARY: Use dummy data
-  const posts: BlogPost[] = dummyPosts;
+  // Use API data if available, otherwise fallback to dummy data
+  const posts: BlogPost[] = useMemo(() => {
+    if (news && news.length > 0) {
+      return news
+        .filter((n) => n.status === "published" && n.published_at)
+        .map(transformNews) as BlogPost[];
+    }
+    // Fallback to dummy data when API is not ready
+    return dummyPosts;
+  }, [news]);
+
   const headline = posts[0]; // First post as headline
 
   // Filter posts for search
-  const filteredPosts = posts.filter((post) =>
-    post.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredPosts = useMemo(() => {
+    if (!searchQuery) return posts;
+    return posts.filter(
+      (post) =>
+        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.summary.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [posts, searchQuery]);
 
   // Pagination calculations
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
@@ -281,14 +296,16 @@ export default function NewsPage() {
     return pages;
   };
 
-  // ORIGINAL REDUX CODE (keep commented):
-  // const { t } = useTranslation();
-  // const { news, newsLoading } = useSelector((state: RootState) => state.masterData);
-  // const posts: BlogPost[] = useMemo(() => {
-  //   return news
-  //     .filter((n) => n.status === "published" && n.published_at)
-  //     .map(transformNews) as BlogPost[];
-  // }, [news]);
+  // Don't show loading if we have dummy data
+  if (newsLoading && (!news || news.length === 0)) {
+    return (
+      <div className="min-h-screen bg-white pt-20">
+        <div className="mx-auto max-w-7xl px-4 py-12 text-center">
+          <p className="text-slate-600">{t("news.loading") || "Memuat berita..."}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white pt-20">
@@ -334,13 +351,15 @@ export default function NewsPage() {
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
           {/* Header with Search */}
           <div className="mb-10 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">Semua Berita</h2>
+            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+              {t("news.allNews") || "Semua Berita"}
+            </h2>
 
             {/* Search Input */}
             <div className="relative w-full sm:w-72">
               <input
                 type="text"
-                placeholder="Cari Berita"
+                placeholder={t("news.searchPlaceholder") || "Cari Berita"}
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -355,7 +374,9 @@ export default function NewsPage() {
           {/* News Grid */}
           {filteredPosts.length === 0 ? (
             <div className="py-16 text-center">
-              <p className="text-slate-600">Tidak ada berita ditemukan.</p>
+              <p className="text-slate-600">
+                {t("news.noResults") || "Tidak ada berita ditemukan."}
+              </p>
             </div>
           ) : (
             <>
@@ -370,8 +391,15 @@ export default function NewsPage() {
               <div className="mt-12 flex flex-col items-center justify-between gap-4 sm:flex-row">
                 {/* Total Results - Left */}
                 <p className="text-sm text-slate-600">
-                  Menampilkan {startIndex + 1} hingga {Math.min(endIndex, filteredPosts.length)}{" "}
-                  dari {filteredPosts.length} entri
+                  {t("news.showingResults", {
+                    start: startIndex + 1,
+                    end: Math.min(endIndex, filteredPosts.length),
+                    total: filteredPosts.length,
+                  }) ||
+                    `Menampilkan ${startIndex + 1} hingga ${Math.min(
+                      endIndex,
+                      filteredPosts.length
+                    )} dari ${filteredPosts.length} entri`}
                 </p>
 
                 {/* Pagination - Right */}
@@ -382,7 +410,7 @@ export default function NewsPage() {
                       onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                       disabled={currentPage === 1}
                       className="flex h-10 w-10 items-center justify-center rounded text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
-                      aria-label="Previous page"
+                      aria-label={t("news.previousPage") || "Halaman sebelumnya"}
                     >
                       <ChevronLeft className="h-5 w-5" />
                     </button>
@@ -410,7 +438,7 @@ export default function NewsPage() {
                       onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                       disabled={currentPage === totalPages}
                       className="flex h-10 w-10 items-center justify-center rounded text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
-                      aria-label="Next page"
+                      aria-label={t("news.nextPage") || "Halaman berikutnya"}
                     >
                       <ChevronRight className="h-5 w-5" />
                     </button>

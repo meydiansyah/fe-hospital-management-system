@@ -27,8 +27,8 @@ export default function ResetPasswordPage() {
       return;
     }
     
+    // TODO: Implement reset password logic with API
     // Handle reset password logic here with token
-    console.log("Reset password:", { token, password: formData.password });
     setIsSubmitted(true);
   };
 
